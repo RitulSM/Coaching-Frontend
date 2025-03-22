@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Users, BookOpen,  Search,  RefreshCcw } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Users, BookOpen, Search, RefreshCcw, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import TeacherNavbar from '../../components/TeacherNavbar';
+import { toast } from 'react-toastify';
 
 function BatchesList() {
     const [batches, setBatches] = useState([]);
@@ -11,6 +12,7 @@ function BatchesList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('all');
     const [currentTeacher, setCurrentTeacher] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Get teacher info from localStorage
@@ -41,6 +43,38 @@ function BatchesList() {
         } catch (error) {
             setError('Failed to fetch batches');
             setLoading(false);
+        }
+    };
+
+    const handleDeleteBatch = async (batchId, e) => {
+        // Prevent navigation to batch details
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (!window.confirm('Are you sure you want to delete this batch? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
+            const response = await axios.delete(
+                `http://localhost:3000/admin/batches/${batchId}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${teacherData.id}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response.data.success) {
+                toast.success('Batch deleted successfully');
+                // Remove the deleted batch from the state
+                setBatches(batches.filter(batch => batch._id !== batchId));
+            }
+        } catch (error) {
+            console.error('Error deleting batch:', error);
+            toast.error(error.response?.data?.message || 'Error deleting batch');
         }
     };
 
@@ -167,17 +201,17 @@ function BatchesList() {
 
                                             <div className="mt-6 flex justify-between items-center">
                                                 <Link
-                                                    to={`/teacher/batches/${batch._id}`} // Update this line
+                                                    to={`/teacher/batches/${batch._id}`}
                                                     className="text-red-600 hover:text-red-800 text-sm font-medium"
                                                 >
                                                     View Details →
                                                 </Link>
                                                 <button
-                                                    onClick={() => {/* Add manage students handler */}}
-                                                    className="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                                                    onClick={(e) => handleDeleteBatch(batch._id, e)}
+                                                    className="text-gray-500 hover:text-red-600 transition-colors"
+                                                    title="Delete Batch"
                                                 >
-                                                    <Users className="h-4 w-4 mr-1" />
-                                                    Manage
+                                                    <Trash2 className="h-5 w-5" />
                                                 </button>
                                             </div>
                                         </div>
@@ -185,7 +219,7 @@ function BatchesList() {
                                 ))}
                             </div>
 
-                            {/* Empty State - Updated message */}
+                            {/* Empty State */}
                             {filteredBatches.length === 0 && (
                                 <div className="text-center py-12">
                                     <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
@@ -196,20 +230,9 @@ function BatchesList() {
                                     </h3>
                                     <p className="mt-1 text-sm text-gray-500">
                                         {searchTerm 
-                                            ? "Try adjusting your search" 
-                                            : "Create your first batch to get started"}
+                                            ? "Try adjusting your search terms"
+                                            : "Get started by creating a new batch"}
                                     </p>
-                                    {!searchTerm && (
-                                        <div className="mt-6">
-                                            <Link
-                                                to="/teacher/batches/create"
-                                                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                                            >
-                                                <Plus className="h-5 w-5 mr-2" />
-                                                Create New Batch
-                                            </Link>
-                                        </div>
-                                    )}
                                 </div>
                             )}
                         </>

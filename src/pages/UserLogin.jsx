@@ -81,7 +81,7 @@ const UserLoginComponent = () => {
             <p className="text-sm text-gray-500">
               New to our platform?{' '}
               <Link
-                to="/user/signup"
+                to="/user/register"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Create an account

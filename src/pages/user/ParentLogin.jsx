@@ -98,8 +98,8 @@ function ParentLoginPage() {
                         </div>
                         <p className="mt-2 text-center text-sm text-gray-600">
                             Don't have an Account{' '}
-                            <Link to="/user/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                Sigup here
+                            <Link to="/user/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                Signup here
                             </Link>
                         </p>
                         <div>

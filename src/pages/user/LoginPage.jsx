@@ -123,7 +123,7 @@ function UserLoginPage() {
             </p>
             <p className="mt-2 text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/user/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <Link to="/user/register" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Sign up
               </Link>
             </p>

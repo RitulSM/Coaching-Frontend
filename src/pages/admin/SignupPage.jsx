@@ -68,22 +68,22 @@ function TeacherSignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex flex-col justify-center py-12 min-h-screen bg-white sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link 
-          to="/" 
-          className="flex items-center text-gray-500 hover:text-red-600 mb-8 mx-4 transition-colors"
+          to="/teacher" 
+          className="flex items-center mx-4 mb-8 text-gray-500 transition-colors hover:text-red-600"
         >
-          <ArrowLeft className="h-5 w-5 mr-2" />
+          <ArrowLeft className="mr-2 w-5 h-5" />
           Back to Home
         </Link>
         
         <div className="flex flex-col items-center">
-          <div className="bg-red-50 p-3 rounded-full">
-            <BookOpen className="h-10 w-10 text-red-600" />
+          <div className="p-3 bg-red-50 rounded-full">
+            <BookOpen className="w-10 h-10 text-red-600" />
           </div>
-          <h2 className="mt-4 text-center text-3xl font-extrabold text-gray-900">Teacher Registration</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <h2 className="mt-4 text-3xl font-extrabold text-center text-gray-900">Teacher Registration</h2>
+          <p className="mt-2 text-sm text-center text-gray-600">
             Already have an account?{' '}
             <Link to="/teacher/login" className="font-medium text-red-600 hover:text-red-500">
               Sign in
@@ -93,9 +93,9 @@ function TeacherSignupPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-lg rounded-lg sm:px-10 border border-gray-200">
+        <div className="px-4 py-8 bg-white rounded-lg border border-gray-200 shadow-lg sm:px-10">
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
+            <div className="p-3 mb-4 text-sm text-red-700 bg-red-50 rounded-md border border-red-200">
               {error}
             </div>
           )}
@@ -105,9 +105,9 @@ function TeacherSignupPage() {
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Full Name
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+              <div className="relative mt-1 rounded-md shadow-sm">
+                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <User className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   id="name"
@@ -116,7 +116,7 @@ function TeacherSignupPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  className="block py-2 pr-3 pl-10 w-full placeholder-gray-400 text-gray-900 bg-white rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   placeholder="John Smith"
                 />
               </div>
@@ -126,9 +126,9 @@ function TeacherSignupPage() {
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 School Email
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+              <div className="relative mt-1 rounded-md shadow-sm">
+                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <Mail className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   id="email"
@@ -137,7 +137,7 @@ function TeacherSignupPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  className="block py-2 pr-3 pl-10 w-full placeholder-gray-400 text-gray-900 bg-white rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   placeholder="teacher@school.edu"
                 />
               </div>
@@ -147,9 +147,9 @@ function TeacherSignupPage() {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+              <div className="relative mt-1 rounded-md shadow-sm">
+                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <Lock className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   id="password"
@@ -159,19 +159,19 @@ function TeacherSignupPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  className="block py-2 pr-10 pl-10 w-full placeholder-gray-400 text-gray-900 bg-white rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   placeholder="Create a secure password"
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                <div className="flex absolute inset-y-0 right-0 items-center pr-3">
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="text-gray-400 hover:text-gray-500 focus:outline-none transition-colors duration-200"
+                    className="text-gray-400 transition-colors duration-200 hover:text-gray-500 focus:outline-none"
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
+                      <EyeOff className="w-5 h-5" />
                     ) : (
-                      <Eye className="h-5 w-5" />
+                      <Eye className="w-5 h-5" />
                     )}
                   </button>
                 </div>
@@ -185,7 +185,7 @@ function TeacherSignupPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex justify-center px-4 py-2 w-full text-sm font-medium text-white bg-red-600 rounded-md border border-transparent shadow-sm transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Creating Account...' : 'Create Teacher Account'}
               </button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, LogOut, User } from 'lucide-react';
+import { BookOpen, LogOut, User, LogIn } from 'lucide-react';
 
 function TeacherNavbar() {
     const [user, setUser] = useState(null);
@@ -30,70 +30,87 @@ function TeacherNavbar() {
     const handleLogout = () => {
         localStorage.removeItem('teacherToken');
         localStorage.removeItem('teacherUser');
+        setUser(null);
         navigate('/teacher/login');
     };
 
     return (
-        <div >
-        <nav className={`sticky w-full z-50 transition-all duration-300 ${
-            isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-lg py-3' : 'bg-white/80 py-4'
-        }`}>
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-red-500 via-red-400 to-orange-400"></div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center">
-                    <Link to="/teacher" className="flex items-center group">
-                        <div className="bg-red-50 p-2 rounded-lg transition-all group-hover:bg-red-100 group-hover:scale-110 duration-300">
-                            <BookOpen className="h-6 w-6 text-red-600" />
-                        </div>
-                        <div className="ml-3">
-                            <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-                                TeacherPortal
-                            </h1>
-                            <span className="text-xs text-gray-500 font-medium">For Passionate Educators</span>
-                        </div>
-                    </Link>
+        <header>
+            <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+                isScrolled 
+                    ? 'py-2 bg-white border-b border-gray-200 shadow-md' 
+                    : 'py-4 bg-white'
+            }`}>
+                <div className="container px-4 mx-auto max-w-7xl">
+                    <div className="flex justify-between items-center h-16">
+                        <Link to="/teacher" className="flex items-center space-x-3 group">
+                            <div className="flex justify-center items-center w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg transition-transform duration-300 group-hover:scale-105">
+                                <BookOpen className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="flex flex-col">
+                                <h1 className="text-xl font-bold text-gray-800">
+                                    TeacherPortal
+                                </h1>
+                                <span className="text-xs font-medium text-gray-500">For Passionate Educators</span>
+                            </div>
+                        </Link>
 
-                    <div className="hidden md:flex items-center space-x-8">
-                        {[
-                            ['My Batches', '/teacher/batches'],
-                            ['Create Batch', '/teacher/batches/create'],
-                            ['Materials', '/teacher/materials'],
-                            ['Resources', '/teacher/resources']
-                        ].map(([name, path]) => (
-                            <Link
-                                key={path}
-                                to={path}
-                                className="text-gray-600 hover:text-red-600 transition-colors relative group font-medium"
-                            >
-                                {name}
-                                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-500 transition-all group-hover:w-full duration-300"></span>
-                            </Link>
-                        ))}
-                    </div>
+                        <div className="hidden items-center space-x-10 md:flex">
+                            {[
+                                ['My Batches', '/teacher/batches'],
+                                ['Create Batch', '/teacher/batches/create']
+                            ].map(([name, path]) => (
+                                <Link
+                                    key={path}
+                                    to={path}
+                                    className="relative font-medium text-gray-700 transition-colors hover:text-red-600"
+                                >
+                                    <span className="relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-red-600 after:transition-all after:duration-300 hover:after:w-full">
+                                        {name}
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
 
-                    <div className="flex items-center space-x-6">
-                        {user && (
-                            <>
-                                <div className="flex items-center space-x-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100 shadow-sm">
-                                    <div className="bg-red-100 p-1 rounded-full">
-                                        <User className="h-5 w-5 text-red-600" />
+                        {user ? (
+                            <div className="flex items-center space-x-4">
+                                <div className="flex items-center p-2 bg-gray-50 rounded-full border border-gray-100">
+                                    <div className="flex justify-center items-center w-8 h-8 bg-red-50 rounded-full">
+                                        <User className="w-4 h-4 text-red-600" />
                                     </div>
-                                    <span className="text-gray-700 font-medium">{user.name || "Teacher"}</span>
+                                    <span className="ml-2 text-sm font-medium text-gray-800">{user.name || "Teacher"}</span>
                                 </div>
                                 <button 
                                     onClick={handleLogout}
-                                    className="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors group"
+                                    className="flex items-center px-4 py-2 space-x-2 text-gray-700 bg-gray-50 rounded-lg border border-gray-100 transition-colors duration-300 hover:bg-red-50 hover:text-red-600 hover:border-red-100"
                                 >
-                                    <span>Logout</span>
-                                    <LogOut className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                                    <span className="text-sm font-medium">Logout</span>
+                                    <LogOut className="w-4 h-4" />
                                 </button>
-                            </>
+                            </div>
+                        ) : (
+                            <div className="flex items-center space-x-4">
+                                <Link
+                                    to="/teacher/login"
+                                    className="flex items-center px-4 py-2 space-x-2 text-gray-700 bg-gray-50 rounded-lg border border-gray-100 transition-colors duration-300 hover:bg-red-50 hover:text-red-600 hover:border-red-100"
+                                >
+                                    <span className="text-sm font-medium">Login</span>
+                                    <LogIn className="w-4 h-4" />
+                                </Link>
+                                <Link
+                                    to="/teacher/signup"
+                                    className="flex items-center px-4 py-2 space-x-2 text-white bg-red-600 rounded-lg transition-colors duration-300 hover:bg-red-700"
+                                >
+                                    <span className="text-sm font-medium">Signup</span>
+                                    <User className="w-4 h-4" />
+                                </Link>
+                            </div>
                         )}
                     </div>
                 </div>
-            </div>
-        </nav>
-        </div>
+            </nav>
+            <div className="h-16"></div>
+        </header>
     );
 }
 

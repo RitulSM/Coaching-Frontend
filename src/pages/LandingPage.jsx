@@ -1,38 +1,38 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowRight,  BookOpen, Award, Clock, Users, MessageSquare, Zap } from "lucide-react"
+import { ArrowRight, BookOpen, Award, Clock, Users, MessageSquare, Zap, Play, GraduationCap } from "lucide-react"
 import StudentNavbar from "../components/StudentNavbar";
 
 const features = [
   {
     title: "Expert Instructors",
     description: "Learn from experienced educators who specialize in your subject area",
-    icon: <Award className="h-8 w-8 text-indigo-600" />,
+    icon: <Award className="w-8 h-8 text-blue-600" />,
   },
   {
     title: "Interactive Learning",
     description: "Engage with course materials through quizzes, exercises, and live sessions",
-    icon: <Zap className="h-8 w-8 text-indigo-600" />,
+    icon: <Zap className="w-8 h-8 text-blue-600" />,
   },
   {
     title: "Study Groups",
     description: "Connect with peers for collaborative learning and problem-solving",
-    icon: <Users className="h-8 w-8 text-indigo-600" />,
+    icon: <Users className="w-8 h-8 text-blue-600" />,
   },
   {
     title: "Practice Tests",
     description: "Prepare for exams with our comprehensive practice materials",
-    icon: <BookOpen className="h-8 w-8 text-indigo-600" />,
+    icon: <BookOpen className="w-8 h-8 text-blue-600" />,
   },
   {
     title: "Flexible Schedule",
     description: "Access course materials anytime, anywhere to fit your learning pace",
-    icon: <Clock className="h-8 w-8 text-indigo-600" />,
+    icon: <Clock className="w-8 h-8 text-blue-600" />,
   },
   {
     title: "Personal Guidance",
     description: "Get personalized feedback and support from dedicated mentors",
-    icon: <MessageSquare className="h-8 w-8 text-indigo-600" />,
+    icon: <MessageSquare className="w-8 h-8 text-blue-600" />,
   },
 ]
 
@@ -52,87 +52,118 @@ function LandingPage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <StudentNavbar />
 
-
-      <div className="relative bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900 to-indigo-700 opacity-90"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-          <div className="md:w-2/3">
-            <h2 className="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl">
-              <span className="block">Achieve Academic</span>
-              <span className="block text-indigo-300">Excellence</span>
-            </h2>
-
-            <p className="mt-6 max-w-lg text-xl text-indigo-100">
+      {/* Hero Section - New Design */}
+      <main className="container px-4 py-12 mx-auto md:py-24">
+        <div className="grid grid-cols-1 gap-12 items-center lg:grid-cols-2">
+          {/* Left Column - Content */}
+          <div className="space-y-8">
+            <h1 className="text-4xl font-bold leading-tight md:text-6xl">
+              Let's Learn New Course & Gain More Skills
+            </h1>
+            <p className="text-lg text-gray-600 md:text-xl">
               Personalized coaching to help you excel in your studies. 
               Our expert educators and tailored learning paths will guide you to success.
             </p>
+            
+            {/* Stats and Features */}
+            <div className="grid grid-cols-2 gap-6 mt-8">
+              <div className="flex gap-3 items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Users className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-xl font-bold">50+</p>
+                  <p className="text-gray-600">Expert Mentors</p>
+                </div>
+              </div>
+              <div className="flex gap-3 items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <BookOpen className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-xl font-bold">50+</p>
+                  <p className="text-gray-600">Batches</p>
+                </div>
+              </div>
+            </div>
 
-            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+            {/* CTA Section */}
+            <div className="flex gap-6 items-center">
               {isLoggedIn ? (
                 <Link
                   to="/student/batches"
-                  className="flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 md:py-4 md:text-lg md:px-10"
+                  className="px-8 py-3 font-semibold text-white bg-blue-600 rounded-full transition-colors hover:bg-blue-700"
                 >
                   Go to My Courses
-                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               ) : (
                 <>
                   <Link
                     to="/user/signup"
-                    className="flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 md:py-4 md:text-lg md:px-10"
+                    className="px-8 py-3 font-semibold text-white bg-blue-600 rounded-full transition-colors hover:bg-blue-700"
                   >
                     Start Learning
-                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
-                  <Link
+                  <Link 
                     to="/student/batches"
-                    className="flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+                    className="flex gap-2 items-center text-gray-700 transition-colors hover:text-blue-600"
                   >
+                    <div className="p-2 bg-blue-100 rounded-full">
+                      <Play className="w-5 h-5 text-blue-600" />
+                    </div>
                     Explore Courses
                   </Link>
                 </>
               )}
             </div>
           </div>
-        </div>
-      </div>
 
-
-      <div className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { number: '10k+', label: 'Students' },
-            { number: '95%', label: 'Success Rate' },
-            { number: '50+', label: 'Expert Teachers' },
-            { number: '100+', label: 'Courses' }
-          ].map(stat => (
-            <div key={stat.label} className="text-center">
-              <p className="text-4xl font-bold text-indigo-600">{stat.number}</p>
-              <p className="mt-2 text-gray-600">{stat.label}</p>
+          {/* Right Column - Image */}
+          <div className="relative">
+            <div className="absolute inset-0 bg-blue-100 rounded-full transform scale-110 translate-x-10 translate-y-10 -z-10"></div>
+            <img
+              src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+              alt="Student learning"
+              className="object-cover w-full rounded-2xl"
+            />
+            
+            {/* Floating Elements */}
+            <div className="absolute top-4 right-4 p-3 bg-white rounded-xl shadow-lg">
+              <GraduationCap className="w-6 h-6 text-blue-600" />
             </div>
-          ))}
+            <div className="absolute bottom-4 left-4 p-4 bg-white rounded-xl shadow-lg">
+              <div className="flex gap-3 items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <BookOpen className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-semibold">Online Learning</p>
+                  <p className="text-sm text-gray-600">Best Way to Learn</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
 
-
+      {/* Why Choose EduCoach Section */}
       <div className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Choose EduCoach?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="px-4 mx-auto max-w-7xl">
+          <h2 className="mb-12 text-3xl font-bold text-center">Why Choose EduCoach?</h2>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                className="p-8 bg-white rounded-xl shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="flex flex-col items-center text-center">
-                  <div className="bg-indigo-50 p-3 rounded-full mb-4">
+                  <div className="p-3 mb-4 bg-blue-50 rounded-full">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                  <h3 className="mb-3 text-xl font-semibold">{feature.title}</h3>
                   <p className="text-gray-600">{feature.description}</p>
                 </div>
               </div>
@@ -142,81 +173,12 @@ function LandingPage() {
       </div>
 
 
-      <div className="my-24">
-        <h3 className="text-3xl font-bold text-center mb-12 text-gray-800">Popular Courses</h3>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {/* Course 1 */}
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
-            <div className="h-48 bg-indigo-200 flex items-center justify-center">
-              <BookOpen className="h-16 w-16 text-indigo-600" />
-            </div>
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-xs font-medium text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">Mathematics</span>
-                <span className="text-sm font-medium text-gray-600">4.9 ★</span>
-              </div>
-              <h4 className="text-lg font-semibold mb-2">Advanced Calculus</h4>
-              <p className="text-gray-600 text-sm mb-4">Master derivatives, integrals, and applications with our comprehensive course.</p>
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-indigo-600">12 Weeks</span>
-                <Link to="/course/calculus" className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">View Details →</Link>
-              </div>
-            </div>
-          </div>
-          
-          {/* Course 2 */}
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
-            <div className="h-48 bg-green-200 flex items-center justify-center">
-              <BookOpen className="h-16 w-16 text-green-600" />
-            </div>
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-xs font-medium text-green-600 bg-green-100 px-3 py-1 rounded-full">Physics</span>
-                <span className="text-sm font-medium text-gray-600">4.8 ★</span>
-              </div>
-              <h4 className="text-lg font-semibold mb-2">Mechanics & Dynamics</h4>
-              <p className="text-gray-600 text-sm mb-4">Understand the fundamental principles of motion, forces, and energy.</p>
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-green-600">10 Weeks</span>
-                <Link to="/course/physics" className="text-green-600 hover:text-green-800 text-sm font-medium">View Details →</Link>
-              </div>
-            </div>
-          </div>
-          
-          {/* Course 3 */}
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
-            <div className="h-48 bg-purple-200 flex items-center justify-center">
-              <BookOpen className="h-16 w-16 text-purple-600" />
-            </div>
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-xs font-medium text-purple-600 bg-purple-100 px-3 py-1 rounded-full">Chemistry</span>
-                <span className="text-sm font-medium text-gray-600">4.7 ★</span>
-              </div>
-              <h4 className="text-lg font-semibold mb-2">Organic Chemistry</h4>
-              <p className="text-gray-600 text-sm mb-4">Explore carbon compounds, reactions, and laboratory techniques.</p>
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-purple-600">14 Weeks</span>
-                <Link to="/course/chemistry" className="text-purple-600 hover:text-purple-800 text-sm font-medium">View Details →</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="mt-10 text-center">
-          <Link to="/courses" className="inline-flex items-center justify-center px-6 py-3 border border-indigo-600 text-indigo-600 hover:bg-indigo-50 text-base font-medium rounded-md">
-            View All Courses
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Testimonials section - improved light mode styling */}
-      <div className="my-24 from-indigo-50 to-blue-50 bg-gradient-to-r rounded-2xl shadow-md p-8">
-        <h3 className="text-3xl font-bold text-center mb-12 text-gray-800">Student Success Stories</h3>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+      {/* Testimonials section - with new styling */}
+      <div className="py-12 my-24 bg-gray-50">
+        <h3 className="mb-12 text-3xl font-bold text-center text-gray-800">Student Success Stories</h3>
+        <div className="grid grid-cols-1 gap-8 px-4 mx-auto max-w-7xl md:grid-cols-2">
           {/* Testimonial 1 */}
-          <div className="bg-white shadow-lg rounded-xl p-8">
+          <div className="p-8 bg-white rounded-xl shadow-lg">
             <div className="flex flex-col h-full">
               <div className="flex-1">
                 <div className="flex items-center mb-4">
@@ -226,11 +188,11 @@ function LandingPage() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-black italic mb-6">"EduCoach helped me improve my math scores from C to A+. The personalized attention and practice tests were exactly what I needed. My confidence has skyrocketed!"</p>
+                <p className="mb-6 italic text-black">"EduCoach helped me improve my math scores from C to A+. The personalized attention and practice tests were exactly what I needed. My confidence has skyrocketed!"</p>
               </div>
               <div className="flex items-center mt-4">
-                <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                  <span className="text-indigo-800 font-bold">AP</span>
+                <div className="flex justify-center items-center w-12 h-12 bg-blue-100 rounded-full">
+                  <span className="font-bold text-blue-800">AP</span>
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-900">Anisha Patel</p>
@@ -241,7 +203,7 @@ function LandingPage() {
           </div>
           
           {/* Testimonial 2 */}
-          <div className="bg-white shadow-lg rounded-xl p-8">
+          <div className="p-8 bg-white rounded-xl shadow-lg">
             <div className="flex flex-col h-full">
               <div className="flex-1">
                 <div className="flex items-center mb-4">
@@ -251,11 +213,11 @@ function LandingPage() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-black italic mb-6">"The study groups and interactive sessions made learning physics enjoyable. I got accepted to my dream university thanks to the preparation I received at EduCoach."</p>
+                <p className="mb-6 italic text-black">"The study groups and interactive sessions made learning physics enjoyable. I got accepted to my dream university thanks to the preparation I received at EduCoach."</p>
               </div>
               <div className="flex items-center mt-4">
-                <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                  <span className="text-indigo-800 font-bold">MK</span>
+                <div className="flex justify-center items-center w-12 h-12 bg-blue-100 rounded-full">
+                  <span className="font-bold text-blue-800">MK</span>
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-900">Michael Kim</p>
@@ -267,17 +229,19 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* CTA section */}
-      <div className="bg-indigo-700 rounded-2xl p-12 text-center text-white mt-20">
-        <h3 className="text-3xl font-bold mb-6">Ready to Transform Your Academic Journey?</h3>
-        <p className="text-xl mb-8 max-w-2xl mx-auto">Join thousands of students who have achieved their academic goals with EduCoach.</p>
-        <Link
-          to="/user/signup"
-          className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50"
-        >
-          Start Your Free Trial
-          <ArrowRight className="ml-2 h-5 w-5" />
-        </Link>
+      {/* CTA section with updated design */}
+      <div className="container px-4 mx-auto mb-20">
+        <div className="p-12 text-center text-white bg-blue-600 rounded-2xl">
+          <h3 className="mb-6 text-3xl font-bold">Ready to Transform Your Academic Journey?</h3>
+          <p className="mx-auto mb-8 max-w-2xl text-xl">Join thousands of students who have achieved their academic goals with EduCoach.</p>
+          <Link
+            to="/user/signup"
+            className="inline-flex justify-center items-center px-8 py-4 text-lg font-medium text-blue-600 bg-white rounded-full border border-white hover:bg-blue-50"
+          >
+            Start Learning
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Link>
+        </div>
       </div>
     </div>
   );

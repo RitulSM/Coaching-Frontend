@@ -23,46 +23,29 @@ function TeacherLoginPage() {
     setError('');
     
     try {
-      loginSchema.parse({ email, password });
-
       const response = await axios.post('http://localhost:3000/admin/login', {
-        email,
-        password
+        email: email,
+        password: password
       });
 
-      console.log('Login response:', response.data); 
-      
-      localStorage.setItem('teacherToken', response.data.token);
-      
-      
-      if (response.data.admin) {
-        localStorage.setItem('teacherUser', JSON.stringify(response.data.admin));
-      } else if (response.data.teacher) {
-        localStorage.setItem('teacherUser', JSON.stringify(response.data.teacher));
-      } else {
-        
-        localStorage.setItem('teacherUser', JSON.stringify({ 
-          name: email.split('@')[0], 
-          email: email 
-        }));
-      }
+      if (response.data.message === "Admin login successful") {
+        // Store teacher/admin data in correct format
+        const teacherData = {
+          id: response.data.admin._id,
+          name: response.data.admin.name,
+          email: response.data.admin.email,
+          role: 'admin',
+          token: response.data.token
+        };
 
-      navigate('/teacher');
+        localStorage.setItem('teacherUser', JSON.stringify(teacherData));
+        navigate('/teacher/batches');
+      } else {
+        setError(response.data.message || 'Login failed');
+      }
     } catch (error) {
       console.error('Login error:', error);
-
-      if (error.errors) {
-        setError(error.errors[0].message);
-      } else if (error.response?.status === 404) {
-        setError('Teacher account not found. Please check your email.');
-      } else if (error.response?.status === 401) {
-        setError('Invalid password. Please try again.');
-      } else {
-        setError(
-          error.response?.data?.message || 
-          'Login failed. Please try again later.'
-        );
-      }
+      setError(error.response?.data?.message || 'Invalid credentials');
     } finally {
       setLoading(false);
     }
@@ -72,7 +55,7 @@ function TeacherLoginPage() {
     <div className="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link 
-          to="/" 
+          to="/teacher" 
           className="flex items-center text-gray-500 hover:text-red-600 mb-8 mx-4 transition-colors"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />

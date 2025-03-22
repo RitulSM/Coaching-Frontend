@@ -17,15 +17,21 @@ function BatchCreation() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Check for authentication first
         const teacherData = localStorage.getItem('teacherUser');
-        if (teacherData) {
-            const teacher = JSON.parse(teacherData);
-            setFormData(prev => ({
-                ...prev,
-                teacher_id: teacher.id
-            }));
+        if (!teacherData) {
+            // If not authenticated, redirect to login page
+            navigate('/teacher/login');
+            return;
         }
-    }, []);
+
+        // If authenticated, set the teacher_id
+        const teacher = JSON.parse(teacherData);
+        setFormData(prev => ({
+            ...prev,
+            teacher_id: teacher.id
+        }));
+    }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,34 +72,34 @@ function BatchCreation() {
     return (
         <div className="min-h-screen bg-gray-50">
             <TeacherNavbar />
-            <div className="w-full px-4 sm:px-6 md:px-8 py-8">
-                <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-                    <div className="bg-red-600 px-6 py-6">
+            <div className="px-4 py-8 w-full sm:px-6 md:px-8">
+                <div className="overflow-hidden mx-auto max-w-md bg-white rounded-xl shadow-md">
+                    <div className="px-6 py-6 bg-red-600">
                         <div className="flex justify-center mb-4">
-                            <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center shadow-md">
-                                <User className="h-8 w-8 text-red-600" />
+                            <div className="flex justify-center items-center w-16 h-16 bg-white rounded-full shadow-md">
+                                <User className="w-8 h-8 text-red-600" />
                             </div>
                         </div>
-                        <h1 className="text-2xl font-bold text-white text-center">
+                        <h1 className="text-2xl font-bold text-center text-white">
                             Create New Batch
                         </h1>
                     </div>
 
                     <form onSubmit={handleSubmit} className="p-6 space-y-6">
                         {error && (
-                            <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">
+                            <div className="p-3 text-sm text-red-700 bg-red-50 rounded-lg">
                                 {error}
                             </div>
                         )}
                         
                         {success && (
-                            <div className="bg-green-50 text-green-700 p-3 rounded-lg text-sm">
+                            <div className="p-3 text-sm text-green-700 bg-green-50 rounded-lg">
                                 {success}
                             </div>
                         )}
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block mb-1 text-sm font-medium text-gray-700">
                                 Batch Name
                             </label>
                             <input
@@ -105,13 +111,13 @@ function BatchCreation() {
                                     name: e.target.value
                                 }))}
                                 required
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                                className="px-4 py-2 w-full rounded-lg border focus:ring-2 focus:ring-red-500"
                                 placeholder="Enter batch name"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block mb-1 text-sm font-medium text-gray-700">
                                 Batch Code
                             </label>
                             <input
@@ -123,13 +129,13 @@ function BatchCreation() {
                                     batch_code: e.target.value.toUpperCase()
                                 }))}
                                 required
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                                className="px-4 py-2 w-full rounded-lg border focus:ring-2 focus:ring-red-500"
                                 placeholder="Enter batch code (e.g., BATCH001)"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block mb-1 text-sm font-medium text-gray-700">
                                 Class
                             </label>
                             <input
@@ -141,16 +147,16 @@ function BatchCreation() {
                                     class: e.target.value
                                 }))}
                                 required
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                                className="px-4 py-2 w-full rounded-lg border focus:ring-2 focus:ring-red-500"
                                 placeholder="Enter class name"
                             />
                         </div>
 
-                        <div className="flex justify-end space-x-4 pt-4">
+                        <div className="flex justify-end pt-4 space-x-4">
                             <button
                                 type="button"
                                 onClick={() => navigate('/teacher/batches')}
-                                className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
+                                className="px-4 py-2 text-gray-700 rounded-lg border hover:bg-gray-50"
                             >
                                 Cancel
                             </button>

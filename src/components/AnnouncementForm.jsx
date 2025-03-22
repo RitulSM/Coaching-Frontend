@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function AnnouncementForm({ batchId, onAnnouncementCreated }) {
+function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, onAnnouncementUpdated, onCancelEdit }) {
     const [formData, setFormData] = useState({
         title: '',
         content: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+
+    useEffect(() => {
+        if (announcementToEdit) {
+            setFormData({
+                title: announcementToEdit.title,
+                content: announcementToEdit.content
+            });
+            setIsEditing(true);
+        } else {
+            setFormData({
+                title: '',
+                content: ''
+            });
+            setIsEditing(false);
+        }
+    }, [announcementToEdit]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,37 +38,69 @@ function AnnouncementForm({ batchId, onAnnouncementCreated }) {
             }
 
             const teacherUser = JSON.parse(teacherUserStr);
-            console.log('Teacher data:', teacherUser); // Debug log
+            
+            if (isEditing) {
+                // Update existing announcement
+                const response = await axios.put(
+                    `http://localhost:3000/admin/batches/${batchId}/announcements/${announcementToEdit._id}`,
+                    formData,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${teacherUser.id}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
 
-            const response = await axios.post(
-                `http://localhost:3000/admin/batches/${batchId}/announcements`,
-                {
-                    ...formData,
-                    teacher_id: teacherUser.id // Add teacher ID to request
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${teacherUser.id}`, // Use teacher ID as token
-                        'Content-Type': 'application/json'
+                if (response.data.success) {
+                    setFormData({ title: '', content: '' });
+                    setIsEditing(false);
+                    if (onAnnouncementUpdated) {
+                        onAnnouncementUpdated(response.data.announcement);
                     }
                 }
-            );
+            } else {
+                // Create new announcement
+                const response = await axios.post(
+                    `http://localhost:3000/admin/batches/${batchId}/announcements`,
+                    {
+                        ...formData,
+                        teacher_id: teacherUser.id
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${teacherUser.id}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
 
-            if (response.data.success) {
-                setFormData({ title: '', content: '' });
-                onAnnouncementCreated(response.data.announcement);
+                if (response.data.success) {
+                    setFormData({ title: '', content: '' });
+                    if (onAnnouncementCreated) {
+                        onAnnouncementCreated(response.data.announcement);
+                    }
+                }
             }
         } catch (error) {
-            console.error('Announcement creation error:', error);
-            setError(error.response?.data?.message || 'Error creating announcement');
+            console.error('Announcement operation error:', error);
+            setError(error.response?.data?.message || `Error ${isEditing ? 'updating' : 'creating'} announcement`);
         } finally {
             setLoading(false);
         }
     };
 
+    const handleCancel = () => {
+        setFormData({ title: '', content: '' });
+        setIsEditing(false);
+        if (onCancelEdit) {
+            onCancelEdit();
+        }
+    };
+
     return (
         <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h3 className="text-lg font-medium mb-4">Create Announcement</h3>
+            <h3 className="text-lg font-medium mb-4">{isEditing ? 'Edit Announcement' : 'Create Announcement'}</h3>
             {error && (
                 <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">
                     {error}
@@ -84,13 +133,24 @@ function AnnouncementForm({ batchId, onAnnouncementCreated }) {
                         required
                     />
                 </div>
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className={`inline-flex justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                >
-                    {loading ? 'Creating...' : 'Create Announcement'}
-                </button>
+                <div className="flex space-x-3">
+                    {isEditing && (
+                        <button
+                            type="button"
+                            onClick={handleCancel}
+                            className="inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        >
+                            Cancel
+                        </button>
+                    )}
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={`inline-flex justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                    >
+                        {loading ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Announcement' : 'Create Announcement')}
+                    </button>
+                </div>
             </form>
         </div>
     );
