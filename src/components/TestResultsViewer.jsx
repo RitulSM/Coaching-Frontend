@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BookOpen, Award, AlertCircle } from 'lucide-react';
+import { useDarkMode } from '../utils/DarkModeContext';
 
 function TestResultsViewer({ batchId, studentId, isParentView = false }) {
     const [tests, setTests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedTest, setSelectedTest] = useState(null);
+    const { darkMode } = useDarkMode();
 
     useEffect(() => {
         if (batchId && (isParentView ? studentId : true)) {
@@ -128,22 +130,22 @@ function TestResultsViewer({ batchId, studentId, isParentView = false }) {
 
     if (loading) {
         return (
-            <div className="p-6 bg-white rounded-lg shadow-sm">
+            <div className={`p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm`}>
                 <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900">Test Results</h2>
+                    <h2 className={`text-xl font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Test Results</h2>
                 </div>
                 <div className="text-center py-8">
                     <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                    <p className="mt-2 text-gray-600">Loading test results...</p>
+                    <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Loading test results...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="p-6 bg-white rounded-lg shadow-sm">
+        <div className={`p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm`}>
             <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">Test Results</h2>
+                <h2 className={`text-xl font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Test Results</h2>
             </div>
 
             {error && (
@@ -157,9 +159,9 @@ function TestResultsViewer({ batchId, studentId, isParentView = false }) {
                 <div>
                     {tests.length === 0 ? (
                         <div className="text-center py-8">
-                            <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
-                            <h3 className="mt-2 text-sm font-medium text-gray-900">No test results found</h3>
-                            <p className="mt-1 text-sm text-gray-500">Your test results will appear here when available.</p>
+                            <BookOpen className={`mx-auto h-12 w-12 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`} />
+                            <h3 className={`mt-2 text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>No test results found</h3>
+                            <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Your test results will appear here when available.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -167,25 +169,25 @@ function TestResultsViewer({ batchId, studentId, isParentView = false }) {
                                 <div 
                                     key={test._id} 
                                     onClick={() => handleSelectTest(test)}
-                                    className="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                                    className={`border rounded-lg p-4 ${darkMode ? 'hover:bg-gray-700 border-gray-700' : 'hover:bg-gray-50 border-gray-200'} cursor-pointer transition-colors`}
                                 >
                                     <div className="flex justify-between items-start">
                                         <div>
-                                            <h3 className="font-medium text-gray-900">{test.examName}</h3>
-                                            <p className="text-sm text-gray-500">Subject: {test.subject}</p>
-                                            <p className="text-sm text-gray-500">Date: {new Date(test.date).toLocaleDateString()}</p>
+                                            <h3 className={`font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>{test.examName}</h3>
+                                            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Subject: {test.subject}</p>
+                                            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Date: {new Date(test.date).toLocaleDateString()}</p>
                                         </div>
                                         <div className="text-right">
                                             {test.studentMark ? (
                                                 <div>
-                                                    <span className="text-lg font-bold">{test.studentMark.marks}</span>
-                                                    <span className="text-sm text-gray-500">/{test.maximumMarks}</span>
+                                                    <span className={`text-lg font-bold ${darkMode ? 'text-gray-200' : ''}`}>{test.studentMark.marks}</span>
+                                                    <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>/{test.maximumMarks}</span>
                                                     <div className={`text-xs mt-1 ${getPerformanceLabel(test.studentMark.marks, test.maximumMarks).color}`}>
                                                         {getPerformanceLabel(test.studentMark.marks, test.maximumMarks).label}
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <span className="text-sm text-gray-500">Not graded yet</span>
+                                                <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Not graded yet</span>
                                             )}
                                         </div>
                                     </div>
@@ -203,21 +205,21 @@ function TestResultsViewer({ batchId, studentId, isParentView = false }) {
                         <span className="mr-1">←</span> Back to all tests
                     </button>
                     
-                    <div className="bg-gray-50 p-6 rounded-lg mb-6">
+                    <div className={`p-6 rounded-lg mb-6 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                         <div className="flex flex-col md:flex-row justify-between items-start">
                             <div className="mb-4 md:mb-0">
-                                <h3 className="text-xl font-medium text-gray-900">{selectedTest.examName}</h3>
-                                <p className="text-gray-500 mt-1">Subject: {selectedTest.subject}</p>
-                                <p className="text-gray-500">Date: {new Date(selectedTest.date).toLocaleDateString()}</p>
-                                <p className="text-gray-500">Maximum Marks: {selectedTest.maximumMarks}</p>
+                                <h3 className={`text-xl font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>{selectedTest.examName}</h3>
+                                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} mt-1`}>Subject: {selectedTest.subject}</p>
+                                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Date: {new Date(selectedTest.date).toLocaleDateString()}</p>
+                                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Maximum Marks: {selectedTest.maximumMarks}</p>
                             </div>
                             
                             {selectedTest.studentMark ? (
-                                <div className="text-center bg-white p-4 rounded-lg shadow-sm">
+                                <div className={`text-center ${darkMode ? 'bg-gray-800' : 'bg-white'} p-4 rounded-lg shadow-sm`}>
                                     <div className="inline-flex items-center justify-center p-4 bg-indigo-50 rounded-full mb-2">
                                         <Award className="h-8 w-8 text-indigo-600" />
                                     </div>
-                                    <div className="text-2xl font-bold">
+                                    <div className={`text-2xl font-bold ${darkMode ? 'text-gray-200' : ''}`}>
                                         {selectedTest.studentMark.marks}/{selectedTest.maximumMarks}
                                     </div>
                                     <div className={`text-sm mt-1 ${getPerformanceLabel(selectedTest.studentMark.marks, selectedTest.maximumMarks).color}`}>
@@ -228,9 +230,9 @@ function TestResultsViewer({ batchId, studentId, isParentView = false }) {
                         </div>
                         
                         {selectedTest.studentMark && selectedTest.studentMark.remarks && (
-                            <div className="mt-6 p-4 bg-white rounded-lg">
-                                <h4 className="text-sm font-medium text-gray-700 mb-2">Teacher's Remarks</h4>
-                                <p className="text-gray-600">{selectedTest.studentMark.remarks}</p>
+                            <div className={`mt-6 p-4 ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg`}>
+                                <h4 className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>Teacher's Remarks</h4>
+                                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{selectedTest.studentMark.remarks}</p>
                             </div>
                         )}
                         

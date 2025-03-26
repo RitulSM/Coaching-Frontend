@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserPlus, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import StudentNavbar from '../../components/StudentNavbar';
+import { useDarkMode } from '../../utils/DarkModeContext';
 
 function JoinBatch() {
     const [batchCode, setBatchCode] = useState('');
@@ -10,6 +11,7 @@ function JoinBatch() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const navigate = useNavigate();
+    const { darkMode } = useDarkMode();
 
     useEffect(() => {
         const userData = localStorage.getItem('user');
@@ -66,10 +68,10 @@ function JoinBatch() {
     };
 
     return (
-        <div>
+        <div className={darkMode ? 'bg-gray-900' : ''}>
             <StudentNavbar />
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-                <div className="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden">
+            <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center p-4`}>
+                <div className={`max-w-md w-full rounded-xl shadow-lg overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
                     {/* Header Section */}
                     <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-8">
                         <div className="flex justify-center mb-4">
@@ -88,21 +90,27 @@ function JoinBatch() {
                     {/* Form Section */}
                     <div className="p-6">
                         {error && (
-                            <div className="mb-4 flex items-center gap-2 p-4 bg-red-50 rounded-lg text-red-700">
+                            <div className={`mb-4 flex items-center gap-2 p-4 rounded-lg ${
+                                darkMode ? 'bg-red-900/30 text-red-300' : 'bg-red-50 text-red-700'
+                            }`}>
                                 <AlertCircle className="h-5 w-5" />
                                 <p className="text-sm">{error}</p>
                             </div>
                         )}
 
                         {success && (
-                            <div className="mb-4 p-4 bg-green-50 rounded-lg text-green-700">
+                            <div className={`mb-4 p-4 rounded-lg ${
+                                darkMode ? 'bg-green-900/30 text-green-300' : 'bg-green-50 text-green-700'
+                            }`}>
                                 {success}
                             </div>
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
-                                <label htmlFor="batchCode" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="batchCode" className={`block text-sm font-medium mb-1 ${
+                                    darkMode ? 'text-gray-300' : 'text-gray-700'
+                                }`}>
                                     Batch Code
                                 </label>
                                 <input
@@ -111,7 +119,11 @@ function JoinBatch() {
                                     value={batchCode}
                                     onChange={(e) => setBatchCode(e.target.value.toUpperCase())}
                                     placeholder="Enter batch code (e.g., BATCH001)"
-                                    className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${
+                                        darkMode 
+                                            ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-500' 
+                                            : 'border-gray-300'
+                                    }`}
                                     required
                                     disabled={loading}
                                 />
@@ -131,7 +143,11 @@ function JoinBatch() {
                                 <button
                                     type="button"
                                     onClick={() => navigate('/student/batches')}
-                                    className="w-full py-3 px-4 border rounded-lg text-gray-700 hover:bg-gray-50"
+                                    className={`w-full py-3 px-4 border rounded-lg ${
+                                        darkMode 
+                                            ? 'text-gray-300 border-gray-600 hover:bg-gray-700' 
+                                            : 'text-gray-700 border-gray-300 hover:bg-gray-50'
+                                    }`}
                                 >
                                     Cancel
                                 </button>

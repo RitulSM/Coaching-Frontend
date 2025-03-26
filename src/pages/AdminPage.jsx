@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, User, LogOut, ChevronRight, BookmarkCheck, GraduationCap, FileText, Library, ArrowRight, Heart, Shield, Clock, Plus, Play } from 'lucide-react';
 import TeacherNavbar from '../components/TeacherNavbar';
+import { useDarkMode } from '../utils/DarkModeContext';
 
 const teacherFeatures = [
   {
@@ -41,6 +42,7 @@ function TeacherLandingPage() {
   const [teacher, setTeacher] = useState(null);
   const [admin, setAdmin] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { darkMode } = useDarkMode();
 
   const navigate = useNavigate();
 
@@ -116,7 +118,7 @@ function TeacherLandingPage() {
   const userRole = admin?.role ? (admin.role.charAt(0).toUpperCase() + admin.role.slice(1)) : "Teacher";
 
   return (
-    <div className="min-h-screen font-sans bg-white">
+    <div className={`min-h-screen overflow-x-hidden font-sans ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
       {/* Updated Navbar to match TeacherNavbar */}
       <TeacherNavbar />
 
@@ -125,13 +127,13 @@ function TeacherLandingPage() {
         <div className="grid grid-cols-1 gap-12 items-center lg:grid-cols-2">
           {/* Left Column - Content */}
           <div className="space-y-8">
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">
+            <h1 className={`text-4xl font-bold leading-tight md:text-5xl ${darkMode ? 'text-gray-100' : ''}`}>
               Teaching Made Simple
               <span className="block mt-3 text-red-600">
                 All Your Tools in One Place
               </span>
             </h1>
-            <p className="text-lg text-gray-600 md:text-xl">
+            <p className={`text-lg md:text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Streamline your teaching workflow with our comprehensive platform 
               designed specifically for educators like you. Save time, reduce stress, 
               and focus on what matters most — your students.
@@ -144,8 +146,8 @@ function TeacherLandingPage() {
                   <User className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold">50+</p>
-                  <p className="text-gray-600">Active Teachers</p>
+                  <p className={`text-xl font-bold ${darkMode ? 'text-gray-100' : ''}`}>50+</p>
+                  <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Active Teachers</p>
                 </div>
               </div>
               <div className="flex gap-3 items-center">
@@ -153,8 +155,8 @@ function TeacherLandingPage() {
                   <Shield className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold">50+</p>
-                  <p className="text-gray-600">Active Batches</p>
+                  <p className={`text-xl font-bold ${darkMode ? 'text-gray-100' : ''}`}>50+</p>
+                  <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Active Batches</p>
                 </div>
               </div>
             </div>
@@ -210,21 +212,21 @@ function TeacherLandingPage() {
       </main>
 
       {/* Features Section */}
-      <section className="py-16 bg-gray-50">
+      <section className={`py-16 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
         <div className="px-4 mx-auto max-w-7xl">
-          <h2 className="mb-12 text-3xl font-bold text-center">Made by Teachers, for Teachers</h2>
+          <h2 className={`mb-12 text-3xl font-bold text-center ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>Made by Teachers, for Teachers</h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {teacherFeatures.map((feature, index) => (
               <div
                 key={index}
-                className="p-8 bg-white rounded-xl shadow-sm transition-shadow hover:shadow-md"
+                className={`p-8 rounded-xl shadow-sm transition-shadow hover:shadow-md ${darkMode ? 'bg-gray-700' : 'bg-white'}`}
               >
                 <div className="flex flex-col items-center text-center">
                   <div className="p-3 mb-4 bg-red-50 rounded-full">
                     {feature.icon}
                   </div>
-                  <h3 className="mb-3 text-xl font-semibold">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <h3 className={`mb-3 text-xl font-semibold ${darkMode ? 'text-gray-100' : ''}`}>{feature.title}</h3>
+                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{feature.description}</p>
                 </div>
               </div>
             ))}

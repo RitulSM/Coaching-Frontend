@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Clock, Calendar, AlertCircle } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import { useDarkMode } from '../utils/DarkModeContext';
 
 function TimetableViewer({ batchId, userType = 'student' }) {
     const [timetable, setTimetable] = useState({
@@ -22,6 +23,7 @@ function TimetableViewer({ batchId, userType = 'student' }) {
         const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
         return days[today] === 'sunday' ? 'monday' : days[today];
     });
+    const { darkMode } = useDarkMode();
 
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
@@ -63,6 +65,9 @@ function TimetableViewer({ batchId, userType = 'student' }) {
             }
 
             const { token } = JSON.parse(userData);
+            
+            console.log(`Fetching timetable from: ${endpoint}`);
+            
             const response = await axios.get(
                 endpoint,
                 {
@@ -72,8 +77,16 @@ function TimetableViewer({ batchId, userType = 'student' }) {
                 }
             );
 
+            console.log('Timetable API response:', response.data);
+
             if (response.data.success) {
                 setTimetable(response.data.timetable);
+                
+                // Debug log to check the structure of a day's entries
+                const firstDay = days.find(day => response.data.timetable[day]?.length > 0);
+                if (firstDay) {
+                    console.log(`Sample period from ${firstDay}:`, response.data.timetable[firstDay][0]);
+                }
             } else {
                 setError('Failed to fetch timetable');
             }
@@ -85,114 +98,143 @@ function TimetableViewer({ batchId, userType = 'student' }) {
         }
     };
 
-    // Format time to 12-hour format
     const formatTime = (timeString) => {
-        if (!timeString) return '';
-        
         try {
+            if (!timeString) return 'N/A';
+            
+            console.log('Formatting time:', timeString);
+            
             const [hours, minutes] = timeString.split(':');
-            const hour = parseInt(hours);
-            const ampm = hour >= 12 ? 'PM' : 'AM';
-            const formattedHour = hour % 12 || 12;
-            return `${formattedHour}:${minutes} ${ampm}`;
-        } catch (error) {
-            return timeString;
+            const hour = parseInt(hours, 10);
+            
+            if (isNaN(hour)) {
+                console.warn('Invalid hour value:', hours);
+                return timeString || 'N/A';
+            }
+            
+            if (hour === 0) {
+                return `12:${minutes} AM`;
+            } else if (hour < 12) {
+                return `${hour}:${minutes} AM`;
+            } else if (hour === 12) {
+                return `12:${minutes} PM`;
+            } else {
+                return `${hour - 12}:${minutes} PM`;
+            }
+        } catch (e) {
+            console.error('Error formatting time:', e, 'Original timeString:', timeString);
+            return timeString || 'N/A';
         }
     };
 
-    // Get all periods for the selected day
     const getPeriodsForDay = () => {
-        const periods = timetable[selectedDay] || [];
-        return periods.sort((a, b) => a.hour - b.hour);
+        return timetable[selectedDay] || [];
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
-            </div>
-        );
-    }
-
-    // Check if there are any classes scheduled for any day
-    const hasAnyClasses = Object.values(timetable).some(day => day && day.length > 0);
-
     return (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-6 flex items-center">
-                <Calendar className="h-5 w-5 mr-2 text-red-600" />
+        <div className={darkMode ? 'text-gray-100' : 'text-gray-900'}>
+            <h2 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
                 Class Timetable
             </h2>
-            
-            {error && (
-                <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4 flex items-start">
-                    <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-                    <p>{error}</p>
+
+            {/* Day Selector */}
+            <div className="overflow-x-auto mb-6">
+                <div className="flex space-x-1">
+                    {days.map(day => (
+                        <button
+                            key={day}
+                            onClick={() => setSelectedDay(day)}
+                            className={`px-3 py-2 text-sm capitalize font-medium rounded-md whitespace-nowrap 
+                                ${selectedDay === day
+                                    ? darkMode
+                                        ? 'bg-indigo-900/50 text-indigo-300'
+                                        : 'bg-indigo-100 text-indigo-700'
+                                    : darkMode
+                                        ? 'text-gray-400 hover:text-gray-300 hover:bg-gray-800'
+                                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                                }
+                            `}
+                        >
+                            {day}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Loading & Error States */}
+            {loading && (
+                <div className="py-8 text-center">
+                    <div className="inline-block w-8 h-8 rounded-full border-2 border-t-2 border-gray-500 animate-spin border-t-indigo-600"></div>
+                    <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Loading timetable...</p>
                 </div>
             )}
-            
-            {!hasAnyClasses ? (
-                <div className="text-center py-8 bg-gray-50 rounded-lg">
-                    <Clock className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-500">No classes have been scheduled yet</p>
+
+            {error && !loading && (
+                <div className={`p-4 rounded-md ${darkMode ? 'text-red-300 bg-red-900/30' : 'text-red-700 bg-red-50'}`}>
+                    <div className="flex">
+                        <AlertCircle className="mr-2 w-5 h-5" />
+                        {error}
+                    </div>
                 </div>
-            ) : (
-                <>
-                    <div className="flex space-x-2 mb-4 overflow-x-auto pb-2">
-                        {days.map(day => (
-                            <button
-                                key={day}
-                                onClick={() => setSelectedDay(day)}
-                                className={`px-4 py-2 rounded-md text-sm font-medium capitalize whitespace-nowrap ${
-                                    selectedDay === day
-                                        ? 'bg-red-100 text-red-700'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                }`}
-                            >
-                                {day}
-                            </button>
-                        ))}
-                    </div>
-                    
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <h3 className="text-lg font-medium mb-4 capitalize">{selectedDay} Schedule</h3>
-                        
-                        {/* Table-like Grid Layout */}
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                                <thead className="bg-gray-100">
-                                    <tr>
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Period</th>
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher</th>
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {getPeriodsForDay().map((entry) => (
-                                        <tr key={entry.hour} className="bg-white">
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {entry.hour}th Period
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
-                                                {entry.subject}
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
-                                                {entry.teacher || "-"}
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
-                                                <span className="flex items-center">
-                                                    <Clock className="h-3 w-3 mr-1 text-blue-600" />
-                                                    {formatTime(entry.startTime)} - {formatTime(entry.endTime)}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+            )}
+
+            {/* Timetable Content */}
+            {!loading && !error && (
+                <div>
+                    {getPeriodsForDay().length > 0 ? (
+                        <div className="space-y-4">
+                            {getPeriodsForDay().map((period, index) => (
+                                <div 
+                                    key={index} 
+                                    className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-sm`}
+                                >
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className={`font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                                                {period.subject || 'General Class'}
+                                            </h3>
+                                            
+                                            {period.topic && (
+                                                <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                    Topic: {period.topic}
+                                                </p>
+                                            )}
+                                            
+                                            <div className={`mt-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                <div className="flex items-center">
+                                                    <Clock className="mr-1 w-4 h-4 text-indigo-500" />
+                                                    {formatTime(period.startTime)} - {formatTime(period.endTime)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className={`px-2 py-1 text-xs rounded ${
+                                            period.isPast 
+                                                ? darkMode 
+                                                    ? 'bg-gray-700 text-gray-300' 
+                                                    : 'bg-gray-100 text-gray-600'
+                                                : period.isCurrent 
+                                                    ? darkMode 
+                                                        ? 'bg-green-900/30 text-green-300' 
+                                                        : 'bg-green-100 text-green-700'
+                                                    : darkMode 
+                                                        ? 'bg-blue-900/30 text-blue-300' 
+                                                        : 'bg-blue-100 text-blue-700'
+                                        }`}>
+                                            {period.isPast ? 'Completed' : period.isCurrent ? 'Current' : 'Upcoming'}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                </>
+                    ) : (
+                        <div className={`text-center py-8 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            <Calendar className={`mx-auto h-12 w-12 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`} />
+                            <h3 className={`mt-2 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>No Classes Scheduled</h3>
+                            <p className="mt-1 text-sm">There are no classes scheduled for {selectedDay}.</p>
+                        </div>
+                    )}
+                </div>
             )}
         </div>
     );

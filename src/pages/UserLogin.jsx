@@ -1,10 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useDarkMode } from '../utils/DarkModeContext';
+import ThemeToggle from '../components/ThemeToggle';
 
 const UserLoginComponent = () => {
+  const { darkMode } = useDarkMode();
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-100 p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden">
+    <div className={`min-h-screen flex items-center justify-center ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-gray-50 to-indigo-100'} p-4`}>
+      <div className={`max-w-md w-full ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-lg overflow-hidden`}>
+        {/* Theme Toggle */}
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
+        
         {/* Header */}
         <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-6">
           <div className="flex justify-center">
@@ -57,7 +66,7 @@ const UserLoginComponent = () => {
             </Link>
             
             <Link to="/parent/login" className="block">
-              <button className="w-full flex items-center justify-center bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-semibold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-1">
+              <button className={`w-full flex items-center justify-center ${darkMode ? 'bg-gray-700 border-indigo-400 text-indigo-400 hover:bg-gray-600' : 'bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50'} font-semibold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-1`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 mr-2"
@@ -78,7 +87,7 @@ const UserLoginComponent = () => {
           </div>
           
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-500">
+            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
               New to our platform?{' '}
               <Link
                 to="/user/register"

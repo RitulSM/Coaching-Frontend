@@ -20,32 +20,35 @@ import ParentDashboard from './pages/parent/Dashboard';
 import BatchDetails from './pages/admin/BatchDetails';
 import StudentBatchDetail from './pages/student/BatchDetail';
 import ParentBatchDetail from './pages/parent/BatchDetail';
+import { DarkModeProvider } from './utils/DarkModeContext';
 
 function App() {
   return (
-    <Router>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/parent/login" element={<ParentLoginPage />} />
-        <Route path="/parent/signup" element={<ParentSignupPage />} />
-        <Route path="/parent/dashboard" element={<ParentDashboard />} />
-        <Route path="/parent/batches/:batchId" element={<ParentBatchDetail />} />
-        <Route path="/student/login" element={<UserLoginPage />} />
-        <Route path="/user/signup" element={<UserSignupPage />} />
-        <Route path="/user/login" element={<UserLoginComponent />} />
-        <Route path="/user/register" element={<UserRegisterComponent />} />
-        <Route path="/teacher" element={<AdminLandingPage />} />
-        <Route path="/teacher/login" element={<TeacherLoginPage />} />
-        <Route path="/teacher/signup" element={<TeacherSignupPage />} />
-        <Route path="/teacher/batches/create" element={<BatchCreation />} />
-        <Route path="/teacher/batches" element={<BatchesList />} />
-        <Route path="/teacher/batches/:batchId" element={<BatchDetails />} />
-        <Route path="/student/join-batch" element={<JoinBatch />} />
-        <Route path="/student/batches" element={<StudentBatches />} />
-        <Route path="/student/batches/:batchId" element={<StudentBatchDetail />} />
-      </Routes>
-    </Router>
+    <DarkModeProvider>
+      <Router>
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/parent/login" element={<ParentLoginPage />} />
+          <Route path="/parent/signup" element={<ParentSignupPage />} />
+          <Route path="/parent/dashboard" element={<ParentDashboard />} />
+          <Route path="/parent/batches/:batchId" element={<ParentBatchDetail />} />
+          <Route path="/student/login" element={<UserLoginPage />} />
+          <Route path="/user/signup" element={<UserSignupPage />} />
+          <Route path="/user/login" element={<UserLoginComponent />} />
+          <Route path="/user/register" element={<UserRegisterComponent />} />
+          <Route path="/teacher" element={<AdminLandingPage />} />
+          <Route path="/teacher/login" element={<TeacherLoginPage />} />
+          <Route path="/teacher/signup" element={<TeacherSignupPage />} />
+          <Route path="/teacher/batches/create" element={<BatchCreation />} />
+          <Route path="/teacher/batches" element={<BatchesList />} />
+          <Route path="/teacher/batches/:batchId" element={<BatchDetails />} />
+          <Route path="/student/join-batch" element={<JoinBatch />} />
+          <Route path="/student/batches" element={<StudentBatches />} />
+          <Route path="/student/batches/:batchId" element={<StudentBatchDetail />} />
+        </Routes>
+      </Router>
+    </DarkModeProvider>
   );
 }
 

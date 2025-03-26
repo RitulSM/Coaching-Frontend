@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User } from 'lucide-react';
 import axios from 'axios';
+import { useDarkMode } from '../../utils/DarkModeContext';
 
 function ParentLoginPage() {
     const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ function ParentLoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { darkMode } = useDarkMode();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,8 +48,8 @@ function ParentLoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-            <div className="max-w-md w-full bg-white rounded-xl shadow-xl overflow-hidden">
+        <div className={`min-h-screen flex items-center justify-center ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-100'} p-4`}>
+            <div className={`max-w-md w-full ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-xl overflow-hidden`}>
                 {/* Header with gradient */}
                 <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 p-6">
                     <div className="flex justify-center">
@@ -73,7 +75,7 @@ function ParentLoginPage() {
 
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
+                            <label htmlFor="email" className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Email Address</label>
                             <input
                                 id="email"
                                 name="email"
@@ -81,11 +83,15 @@ function ParentLoginPage() {
                                 required
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="mt-1 block w-full px-3 py-2 border rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                className={`mt-1 block w-full px-3 py-2 border rounded-xl shadow-sm ${
+                                    darkMode 
+                                        ? 'bg-gray-700 text-white border-gray-600 focus:ring-indigo-500 focus:border-indigo-500' 
+                                        : 'focus:ring-indigo-500 focus:border-indigo-500'
+                                }`}
                             />
                         </div>
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                            <label htmlFor="password" className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Password</label>
                             <input
                                 id="password"
                                 name="password"
@@ -93,10 +99,14 @@ function ParentLoginPage() {
                                 required
                                 value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                className="mt-1 block w-full px-3 py-2 border rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                className={`mt-1 block w-full px-3 py-2 border rounded-xl shadow-sm ${
+                                    darkMode 
+                                        ? 'bg-gray-700 text-white border-gray-600 focus:ring-indigo-500 focus:border-indigo-500' 
+                                        : 'focus:ring-indigo-500 focus:border-indigo-500'
+                                }`}
                             />
                         </div>
-                        <p className="mt-2 text-center text-sm text-gray-600">
+                        <p className={`mt-2 text-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                             Don't have an Account{' '}
                             <Link to="/user/register" className="font-medium text-indigo-600 hover:text-indigo-500">
                                 Signup here
@@ -114,7 +124,7 @@ function ParentLoginPage() {
                     </form>
 
                     <div className="mt-8 text-center">
-                        <p className="text-sm text-gray-600">
+                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                             Are you a student?{' '}
                             <Link to="/student/login" className="font-medium text-indigo-600 hover:text-indigo-500">
                                 Login here

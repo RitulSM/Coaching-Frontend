@@ -8,6 +8,7 @@ import TimetableViewer from '../../components/TimetableViewer';
 import TestResultsViewer from '../../components/TestResultsViewer';
 import TestResultsDebug from '../../components/TestResultsDebug';
 import ParentFeesView from '../../components/ParentFeesView';
+import { useDarkMode } from '../../utils/DarkModeContext';
 
 function ParentBatchDetail() {
     const [batch, setBatch] = useState(null);
@@ -18,6 +19,7 @@ function ParentBatchDetail() {
     const studentId = searchParams.get('studentId');
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('overview');
+    const { darkMode } = useDarkMode();
 
     useEffect(() => {
         const fetchBatchDetails = async () => {
@@ -82,46 +84,46 @@ function ParentBatchDetail() {
                 return (
                     <div className="space-y-6">
                         {/* Student Information */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h2 className="text-lg font-semibold text-gray-900 mb-4">Student Information</h2>
+                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm p-6`}>
+                            <h2 className={`text-lg font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'} mb-4`}>Student Information</h2>
                             <div className="flex items-center space-x-4">
                                 <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
                                     <User className="h-6 w-6 text-indigo-600" />
                                 </div>
                                 <div>
-                                    <h3 className="text-md font-medium text-gray-900">{batch?.student?.name}</h3>
-                                    <p className="text-sm text-gray-500">{batch?.student?.email}</p>
+                                    <h3 className={`text-md font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>{batch?.student?.name}</h3>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{batch?.student?.email}</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Teacher Information */}
-                        <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h2 className="text-lg font-semibold text-gray-900 mb-4">Teacher Information</h2>
+                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm p-6`}>
+                            <h2 className={`text-lg font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'} mb-4`}>Teacher Information</h2>
                             {batch?.teacher ? (
                                 <div className="flex items-center space-x-4">
                                     <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
                                         <User className="h-6 w-6 text-indigo-600" />
                                     </div>
                                     <div>
-                                        <h3 className="text-md font-medium text-gray-900">{batch.teacher.name}</h3>
-                                        <div className="mt-1 flex items-center text-sm text-gray-500">
+                                        <h3 className={`text-md font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>{batch.teacher.name}</h3>
+                                        <div className={`mt-1 flex items-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                             <Mail className="h-4 w-4 mr-1" />
                                             {batch.teacher.email}
                                         </div>
                                     </div>
                                 </div>
                             ) : (
-                                <p className="text-gray-500">No teacher assigned</p>
+                                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No teacher assigned</p>
                             )}
                         </div>
 
                         {/* Batch Statistics */}
-                        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm p-6 mb-6`}>
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h1 className="text-2xl font-bold text-gray-900">{batch?.name}</h1>
-                                    <p className="text-sm text-gray-500 mt-1">Batch Code: {batch?.batch_code}</p>
+                                    <h1 className={`text-2xl font-bold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>{batch?.name}</h1>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} mt-1`}>Batch Code: {batch?.batch_code}</p>
                                 </div>
                                 <span className="px-3 py-1 text-sm font-medium rounded-full bg-indigo-100 text-indigo-800">
                                     Class {batch?.class}
@@ -132,22 +134,22 @@ function ParentBatchDetail() {
                                 <div className="flex items-center">
                                     <BookOpen className="h-5 w-5 text-gray-400 mr-2" />
                                     <div>
-                                        <p className="text-sm text-gray-500">Total Students</p>
-                                        <p className="font-medium">{batch?.studentsCount || 0}</p>
+                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Total Students</p>
+                                        <p className={`font-medium ${darkMode ? 'text-gray-300' : ''}`}>{batch?.studentsCount || 0}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center">
                                     <Users className="h-5 w-5 text-gray-400 mr-2" />
                                     <div>
-                                        <p className="text-sm text-gray-500">Announcements</p>
-                                        <p className="font-medium">{batch?.announcements?.length || 0}</p>
+                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Announcements</p>
+                                        <p className={`font-medium ${darkMode ? 'text-gray-300' : ''}`}>{batch?.announcements?.length || 0}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center">
                                     <Calendar className="h-5 w-5 text-gray-400 mr-2" />
                                     <div>
-                                        <p className="text-sm text-gray-500">Started On</p>
-                                        <p className="font-medium">
+                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Started On</p>
+                                        <p className={`font-medium ${darkMode ? 'text-gray-300' : ''}`}>
                                             {new Date(batch?.createdAt).toLocaleDateString()}
                                         </p>
                                     </div>
@@ -160,7 +162,7 @@ function ParentBatchDetail() {
             case 'attendance':
                 return (
                     <div className="space-y-6">
-                        <div className="bg-white rounded-lg shadow-sm p-6">
+                        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm p-6`}>
                             <ParentAttendanceView 
                                 batchId={batchId} 
                                 studentId={searchParams.get('studentId')} 
@@ -171,15 +173,15 @@ function ParentBatchDetail() {
 
             case 'announcements':
                 return (
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                        <h2 className="text-lg font-semibold mb-4">Announcements</h2>
+                    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg shadow-sm p-6`}>
+                        <h2 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-gray-200' : ''}`}>Announcements</h2>
                         <div className="space-y-4">
                             {batch?.announcements?.length > 0 ? (
                                 batch.announcements.map((announcement, index) => (
-                                    <div key={index} className="border-l-4 border-indigo-500 pl-4 py-4 bg-gray-50 rounded-r-lg">
-                                        <h3 className="text-lg font-medium text-gray-900">{announcement.title}</h3>
-                                        <p className="mt-2 text-gray-600">{announcement.content}</p>
-                                        <div className="mt-2 flex items-center text-sm text-gray-500">
+                                    <div key={index} className={`border-l-4 border-indigo-500 pl-4 py-4 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-r-lg`}>
+                                        <h3 className={`text-lg font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>{announcement.title}</h3>
+                                        <p className={`mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{announcement.content}</p>
+                                        <div className={`mt-2 flex items-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                             <Calendar className="h-4 w-4 mr-1" />
                                             {new Date(announcement.createdAt).toLocaleDateString()}
                                             <span className="mx-2">•</span>
@@ -189,7 +191,7 @@ function ParentBatchDetail() {
                                     </div>
                                 ))
                             ) : (
-                                <p className="text-gray-500">No announcements yet</p>
+                                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No announcements yet</p>
                             )}
                         </div>
                     </div>
@@ -223,7 +225,7 @@ function ParentBatchDetail() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             </div>
         );
@@ -231,10 +233,10 @@ function ParentBatchDetail() {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
                 <div className="text-center">
-                    <h2 className="text-xl font-semibold text-gray-900">Error</h2>
-                    <p className="mt-2 text-gray-600">{error}</p>
+                    <h2 className={`text-xl font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Error</h2>
+                    <p className={`mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{error}</p>
                     <Link
                         to="/parent/dashboard"
                         className="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-800"
@@ -248,7 +250,7 @@ function ParentBatchDetail() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
             <ParentNavbar />
             <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <Link
@@ -260,7 +262,7 @@ function ParentBatchDetail() {
                 </Link>
 
                 {/* Tabs */}
-                <div className="mb-6 border-b border-gray-200">
+                <div className={`mb-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                     <div className="flex flex-wrap -mb-px">
                         {[
                             { id: 'overview', label: 'Overview', icon: <BookOpen className="w-4 h-4 mr-2" /> },
@@ -276,7 +278,9 @@ function ParentBatchDetail() {
                                 className={`flex items-center text-sm font-medium px-4 py-3 border-b-2 ${
                                     activeTab === tab.id
                                         ? 'text-indigo-600 border-indigo-600'
-                                        : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+                                        : darkMode 
+                                            ? 'text-gray-400 border-transparent hover:text-gray-300 hover:border-gray-500'
+                                            : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
                                 }`}
                             >
                                 {tab.icon}

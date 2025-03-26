@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useDarkMode } from '../utils/DarkModeContext';
 
 function TestResultsDebug({ batchId, studentId, isParentView = false }) {
     const [apiResponse, setApiResponse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [userInfo, setUserInfo] = useState(null);
+    const { darkMode } = useDarkMode();
 
     useEffect(() => {
         // Get user information from localStorage
@@ -64,12 +66,12 @@ function TestResultsDebug({ batchId, studentId, isParentView = false }) {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-sm">
+        <div className={`rounded-lg shadow-sm ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
             
             {apiResponse && (
                 <div className="mb-4">
-                    <h3 className="mb-2 font-medium text-gray-900">API Response</h3>
-                    <pre className="overflow-auto p-2 max-h-96 text-xs bg-gray-100 rounded">
+                    <h3 className={`mb-2 font-medium ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>API Response</h3>
+                    <pre className={`overflow-auto p-2 max-h-96 text-xs ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100'} rounded`}>
                         {JSON.stringify(apiResponse, null, 2)}
                     </pre>
                 </div>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus, BookOpen, Users, Calendar, Search } from 'lucide-react';
 import axios from 'axios';
 import StudentNavbar from '../../components/StudentNavbar';
+import { useDarkMode } from '../../utils/DarkModeContext';
 
 function StudentBatches() {
     const [batches, setBatches] = useState([]);
@@ -10,6 +11,7 @@ function StudentBatches() {
     const [error, setError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+    const { darkMode } = useDarkMode();
 
     useEffect(() => {
         const userData = localStorage.getItem('user');
@@ -67,23 +69,23 @@ function StudentBatches() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             </div>
         );
     }
 
     return (
-        <div>
+        <div className={darkMode ? 'bg-gray-900' : ''}>
             <StudentNavbar />
-            <div className="min-h-screen bg-gray-50 py-8 px-4">
+            <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} py-8 px-4`}>
             
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">My Batches</h1>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <h1 className={`text-2xl font-bold ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>My Batches</h1>
+                            <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                 View and manage your enrolled batches
                             </p>
                         </div>
@@ -107,14 +109,20 @@ function StudentBatches() {
                                 placeholder="Search batches by code or teacher..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                className={`pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-indigo-500 ${
+                                    darkMode 
+                                        ? 'bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-500' 
+                                        : 'border-gray-300'
+                                }`}
                             />
                         </div>
                     </div>
 
                     {/* Error Message */}
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
+                        <div className={`mb-6 p-4 rounded-lg ${
+                            darkMode ? 'bg-red-900/30 text-red-300' : 'bg-red-50 text-red-700'
+                        }`}>
                             {error}
                         </div>
                     )}
@@ -124,32 +132,36 @@ function StudentBatches() {
                         {filteredBatches.map(batch => (
                             <div
                                 key={batch._id}
-                                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                                className={`rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ${
+                                    darkMode ? 'bg-gray-800' : 'bg-white'
+                                }`}
                             >
                                 <div className="p-6">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
-                                            <h3 className="text-lg font-semibold text-gray-900">
+                                            <h3 className={`text-lg font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
                                                 {batch.name || 'Unnamed Batch'}
                                             </h3>
-                                            <p className="text-sm text-gray-500">
+                                            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                                 Code: {batch.batch_code}
                                             </p>
-                                            <p className="text-sm text-gray-500 mt-1">
+                                            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
                                                 Teacher: {batch.teacher?.name || 'Not assigned'}
                                             </p>
                                         </div>
-                                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                            darkMode ? 'bg-green-900/30 text-green-300' : 'bg-green-100 text-green-800'
+                                        }`}>
                                             Active
                                         </span>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <div className="flex items-center text-sm text-gray-500">
+                                        <div className={`flex items-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                             <Users className="h-4 w-4 mr-2" />
                                             {batch.studentsCount || 0} Students
                                         </div>
-                                        <div className="flex items-center text-sm text-gray-500">
+                                        <div className={`flex items-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                             <Calendar className="h-4 w-4 mr-2" />
                                             {new Date(batch.createdAt).toLocaleDateString()}
                                         </div>
@@ -158,7 +170,9 @@ function StudentBatches() {
                                     <div className="mt-6">
                                         <Link
                                             to={`/student/batches/${batch._id}`}
-                                            className="inline-flex items-center text-indigo-600 hover:text-indigo-800"
+                                            className={`inline-flex items-center ${
+                                                darkMode ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'
+                                            }`}
                                         >
                                             <BookOpen className="h-4 w-4 mr-1" />
                                             View Batch Details
@@ -172,9 +186,9 @@ function StudentBatches() {
                     {/* Empty State */}
                     {filteredBatches.length === 0 && (
                         <div className="text-center py-12">
-                            <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
-                            <h3 className="mt-2 text-sm font-medium text-gray-900">No batches found</h3>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <BookOpen className={`mx-auto h-12 w-12 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`} />
+                            <h3 className={`mt-2 text-sm font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>No batches found</h3>
+                            <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                 {searchTerm ? "Try adjusting your search" : "Join a batch to get started"}
                             </p>
                             {!searchTerm && (

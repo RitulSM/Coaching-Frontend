@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useDarkMode } from '../utils/DarkModeContext';
 
 function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, onAnnouncementUpdated, onCancelEdit }) {
     const [formData, setFormData] = useState({
@@ -9,6 +10,7 @@ function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [isEditing, setIsEditing] = useState(false);
+    const { darkMode } = useDarkMode();
 
     useEffect(() => {
         if (announcementToEdit) {
@@ -99,16 +101,16 @@ function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, 
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h3 className="text-lg font-medium mb-4">{isEditing ? 'Edit Announcement' : 'Create Announcement'}</h3>
+        <div className={`p-6 ${darkMode ? 'text-white bg-gray-800' : 'bg-white'} rounded-lg shadow-sm`}>
+            <h3 className={`mb-4 text-lg font-medium ${darkMode ? 'text-gray-200' : ''}`}>{isEditing ? 'Edit Announcement' : 'Create Announcement'}</h3>
             {error && (
-                <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">
+                <div className="p-3 mb-4 text-sm text-red-700 bg-red-50 rounded-md">
                     {error}
                 </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="title" className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                         Title
                     </label>
                     <input
@@ -116,12 +118,16 @@ function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, 
                         id="title"
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-red-500 focus:ring-red-500"
+                        className={`block px-3 py-2 mt-1 w-full rounded-md border ${
+                            darkMode 
+                                ? 'text-white bg-gray-700 border-gray-600 focus:border-red-500 focus:ring-red-500' 
+                                : 'border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500'
+                        }`}
                         required
                     />
                 </div>
                 <div>
-                    <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="content" className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                         Content
                     </label>
                     <textarea
@@ -129,7 +135,11 @@ function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, 
                         value={formData.content}
                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                         rows={4}
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-red-500 focus:ring-red-500"
+                        className={`block px-3 py-2 mt-1 w-full rounded-md border ${
+                            darkMode 
+                                ? 'text-white bg-gray-700 border-gray-600 focus:border-red-500 focus:ring-red-500' 
+                                : 'border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500'
+                        }`}
                         required
                     />
                 </div>
@@ -138,7 +148,11 @@ function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, 
                         <button
                             type="button"
                             onClick={handleCancel}
-                            className="inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                            className={`inline-flex justify-center px-4 py-2 text-sm font-medium ${
+                                darkMode
+                                    ? 'text-gray-300 bg-gray-700 border-gray-600 hover:bg-gray-600'
+                                    : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-50'
+                            } rounded-md border shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2`}
                         >
                             Cancel
                         </button>

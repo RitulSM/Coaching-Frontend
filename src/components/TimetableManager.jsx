@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Clock, Save, Plus, X, AlertCircle } from 'lucide-react';
+import { useDarkMode } from '../utils/DarkModeContext';
 
 function TimetableManager({ batchId }) {
     const [timetable, setTimetable] = useState({
@@ -23,6 +24,7 @@ function TimetableManager({ batchId }) {
         startTime: '',
         endTime: ''
     });
+    const { darkMode } = useDarkMode();
 
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
@@ -201,8 +203,8 @@ function TimetableManager({ batchId }) {
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-6">Class Timetable</h2>
+        <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-sm`}>
+            <h2 className={`text-xl font-semibold mb-6 ${darkMode ? 'text-gray-200' : ''}`}>Class Timetable</h2>
             
             {error && (
                 <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4 flex items-start">
@@ -226,7 +228,9 @@ function TimetableManager({ batchId }) {
                             className={`px-4 py-2 rounded-md text-sm font-medium capitalize whitespace-nowrap ${
                                 selectedDay === day
                                     ? 'bg-red-100 text-red-700'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    : darkMode 
+                                        ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             }`}
                         >
                             {day}
@@ -234,9 +238,9 @@ function TimetableManager({ batchId }) {
                     ))}
                 </div>
                 
-                <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                <div className={`p-4 rounded-lg mb-4 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-medium capitalize">{selectedDay} Schedule</h3>
+                        <h3 className={`text-lg font-medium capitalize ${darkMode ? 'text-gray-200' : ''}`}>{selectedDay} Schedule</h3>
                         <div className="flex space-x-2">
                             <button
                                 onClick={() => setShowAddForm(true)}
@@ -247,7 +251,11 @@ function TimetableManager({ batchId }) {
                             </button>
                             <button
                                 onClick={handleClearDay}
-                                className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                                className={`inline-flex items-center px-3 py-1.5 text-sm font-medium ${
+                                    darkMode 
+                                        ? 'text-gray-300 bg-gray-600 hover:bg-gray-500' 
+                                        : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
+                                } rounded-md`}
                             >
                                 <X size={16} className="mr-1" />
                                 Clear Day
@@ -257,29 +265,31 @@ function TimetableManager({ batchId }) {
                     
                     {/* Table-like Grid Layout */}
                     <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                            <thead className="bg-gray-100">
+                        <table className={`min-w-full divide-y ${darkMode ? 'divide-gray-600' : 'divide-gray-200'} border ${darkMode ? 'border-gray-600' : 'border-gray-200'} rounded-lg`}>
+                            <thead className={darkMode ? 'bg-gray-800' : 'bg-gray-100'}>
                                 <tr>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Period</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">Time</th>
-                                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-20">Action</th>
+                                    <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider w-24`}>Period</th>
+                                    <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Subject</th>
+                                    <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider`}>Teacher</th>
+                                    <th className={`px-4 py-3 text-left text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider w-40`}>Time</th>
+                                    <th className={`px-4 py-3 text-right text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'} uppercase tracking-wider w-20`}>Action</th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className={`${darkMode ? 'bg-gray-700 divide-y divide-gray-600' : 'bg-white divide-y divide-gray-200'}`}>
                                 {getPeriodsForDay().map((entry) => (
-                                    <tr key={entry.hour} className="bg-white">
+                                    <tr key={entry.hour} className={darkMode ? 'bg-gray-700' : 'bg-white'}>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {entry.hour}th Period
+                                            <span className={darkMode ? 'text-gray-200' : ''}>
+                                                {entry.hour}th Period
+                                            </span>
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                                        <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                                             {entry.subject}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                                        <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                                             {entry.teacher || "-"}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                                        <td className={`px-4 py-3 whitespace-nowrap text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                                             <span className="flex items-center">
                                                 <Clock className="h-3 w-3 mr-1 text-blue-600" />
                                                 {formatTime(entry.startTime)} - {formatTime(entry.endTime)}
@@ -288,7 +298,7 @@ function TimetableManager({ batchId }) {
                                         <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                                             <button 
                                                 onClick={() => handleRemoveEntry(entry.hour)}
-                                                className="text-red-600 hover:text-red-900"
+                                                className={darkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-900'}
                                             >
                                                 <X size={16} />
                                             </button>
@@ -302,12 +312,12 @@ function TimetableManager({ batchId }) {
                 
                 {/* Add/Edit Class Form */}
                 {showAddForm && (
-                    <div className="bg-white border border-gray-200 rounded-lg p-6 mb-4 shadow-sm">
+                    <div className={`${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'} border rounded-lg p-6 mb-4 shadow-sm`}>
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-medium">Add Class Period</h3>
+                            <h3 className={`text-lg font-medium ${darkMode ? 'text-gray-200' : ''}`}>Add Class Period</h3>
                             <button 
                                 onClick={() => setShowAddForm(false)}
-                                className="text-gray-400 hover:text-gray-600"
+                                className={darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'}
                             >
                                 <X size={20} />
                             </button>
@@ -315,56 +325,76 @@ function TimetableManager({ batchId }) {
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Period Number</label>
+                                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>Period Number</label>
                                 <input
                                     type="number"
                                     min="1"
                                     value={newEntry.hour}
                                     onChange={(e) => setNewEntry({ ...newEntry, hour: e.target.value })}
                                     placeholder="Enter period number"
-                                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 py-3 text-base"
+                                    className={`w-full rounded-md ${
+                                        darkMode 
+                                            ? 'bg-gray-800 border-gray-600 text-white focus:border-red-500 focus:ring focus:ring-red-200' 
+                                            : 'border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200'
+                                    } py-3 text-base`}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Teacher</label>
+                                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>Teacher</label>
                                 <input
                                     type="text"
                                     value={newEntry.teacher}
                                     onChange={(e) => setNewEntry({ ...newEntry, teacher: e.target.value })}
                                     placeholder="Enter teacher's name"
-                                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 py-3 text-base"
+                                    className={`w-full rounded-md ${
+                                        darkMode 
+                                            ? 'bg-gray-800 border-gray-600 text-white focus:border-red-500 focus:ring focus:ring-red-200' 
+                                            : 'border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200'
+                                    } py-3 text-base`}
                                 />
                             </div>
                         </div>
                         
                         <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                            <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>Subject</label>
                             <input
                                 type="text"
                                 value={newEntry.subject}
                                 onChange={(e) => setNewEntry({ ...newEntry, subject: e.target.value })}
                                 placeholder="Enter subject name (e.g. Mathematics, Science, English)"
-                                className="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 py-3 text-base"
+                                className={`w-full rounded-md ${
+                                    darkMode 
+                                        ? 'bg-gray-800 border-gray-600 text-white focus:border-red-500 focus:ring focus:ring-red-200' 
+                                        : 'border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200'
+                                } py-3 text-base`}
                             />
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
+                                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>Start Time</label>
                                 <input
                                     type="time"
                                     value={newEntry.startTime}
                                     onChange={(e) => setNewEntry({ ...newEntry, startTime: e.target.value })}
-                                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 py-3 text-base"
+                                    className={`w-full rounded-md ${
+                                        darkMode 
+                                            ? 'bg-gray-800 border-gray-600 text-white focus:border-red-500 focus:ring focus:ring-red-200' 
+                                            : 'border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200'
+                                    } py-3 text-base`}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">End Time</label>
+                                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>End Time</label>
                                 <input
                                     type="time"
                                     value={newEntry.endTime}
                                     onChange={(e) => setNewEntry({ ...newEntry, endTime: e.target.value })}
-                                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 py-3 text-base"
+                                    className={`w-full rounded-md ${
+                                        darkMode 
+                                            ? 'bg-gray-800 border-gray-600 text-white focus:border-red-500 focus:ring focus:ring-red-200' 
+                                            : 'border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200'
+                                    } py-3 text-base`}
                                 />
                             </div>
                         </div>

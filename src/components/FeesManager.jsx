@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { DollarSign, Check, X, AlertCircle, Edit, Search } from 'lucide-react';
+import { DollarSign, Check, X, AlertCircle, Edit, Search, TrendingUp, FileText, Calendar, UserCheck } from 'lucide-react';
+import { useDarkMode } from '../utils/DarkModeContext';
 
 function FeesManager({ batchId }) {
     const [loading, setLoading] = useState(true);
@@ -12,6 +13,7 @@ function FeesManager({ batchId }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState(null);
+    const [statsVisible, setStatsVisible] = useState(true);
     const [paymentForm, setPaymentForm] = useState({
         studentId: '',
         amount: '',
@@ -19,6 +21,7 @@ function FeesManager({ batchId }) {
         status: 'paid',
         remarks: ''
     });
+    const { darkMode } = useDarkMode();
 
     // API base URL
     const API_BASE_URL = 'http://localhost:3000';
@@ -30,49 +33,14 @@ function FeesManager({ batchId }) {
         }
     }, [batchId]);
 
-    // Get authentication token from local storage
-    const getAuthToken = () => {
-        try {
-            const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
-            if (!teacherData || !teacherData.token) {
-                throw new Error('Authentication token not found');
-            }
-            return teacherData.token;
-        } catch (error) {
-            console.error('Error getting auth token:', error);
-            setError('Authentication error. Please login again.');
-            return null;
-        }
-    };
-
-    // Create authenticated axios instance
-    const getAuthAxios = () => {
-        const token = getAuthToken();
-        if (!token) return null;
-
-        return axios.create({
-            baseURL: API_BASE_URL,
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-    };
-
     // Fetch students and fees payment data
     const fetchFeesData = async () => {
         setLoading(true);
         setError(null);
         
         try {
-            const authAxios = getAuthAxios();
-            if (!authAxios) {
-                setLoading(false);
-                return;
-            }
-
             // Fetch batch details to get students
-            const batchResponse = await authAxios.get(`/admin/batches/${batchId}`);
+            const batchResponse = await axios.get(`${API_BASE_URL}/admin/batches/${batchId}`);
             
             if (batchResponse.data?.success) {
                 // Ensure students data is properly populated
@@ -83,7 +51,7 @@ function FeesManager({ batchId }) {
             }
 
             // Fetch fees payments
-            const feesResponse = await authAxios.get(`/admin/batches/${batchId}/fees`);
+            const feesResponse = await axios.get(`${API_BASE_URL}/admin/batches/${batchId}/fees`);
 
             if (feesResponse.data?.success) {
                 setFeesPayments(feesResponse.data.feesPayments || []);
@@ -169,12 +137,6 @@ function FeesManager({ batchId }) {
         setError(null);
         
         try {
-            const authAxios = getAuthAxios();
-            if (!authAxios) {
-                setSubmitting(false);
-                return;
-            }
-            
             // Prepare request data
             const requestData = {
                 studentId: paymentForm.studentId,
@@ -184,9 +146,9 @@ function FeesManager({ batchId }) {
                 remarks: paymentForm.remarks || ''
             };
             
-            // Submit data to API
-            const response = await authAxios.post(
-                `/admin/batches/${batchId}/fees`,
+            // Make API call
+            const response = await axios.post(
+                `${API_BASE_URL}/admin/batches/${batchId}/fees`,
                 requestData
             );
             
@@ -196,6 +158,9 @@ function FeesManager({ batchId }) {
                 // Update the fees payments list
                 if (Array.isArray(response.data.feesPayments)) {
                     setFeesPayments(response.data.feesPayments);
+                } else {
+                    // Refresh data to get updated list
+                    fetchFeesData();
                 }
                 
                 // Close the modal
@@ -225,13 +190,13 @@ function FeesManager({ batchId }) {
     const getStatusColor = (status) => {
         switch (status) {
             case 'paid':
-                return 'bg-green-100 text-green-800';
+                return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
             case 'pending':
-                return 'bg-yellow-100 text-yellow-800';
+                return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
             case 'overdue':
-                return 'bg-red-100 text-red-800';
+                return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
         }
     };
 
@@ -259,6 +224,36 @@ function FeesManager({ batchId }) {
         );
     });
 
+    // Calculate statistics
+    const calculateStats = () => {
+        const totalStudents = students.length;
+        const paidCount = feesPayments.filter(payment => payment.status === 'paid').length;
+        const pendingCount = feesPayments.filter(payment => payment.status === 'pending').length;
+        const overdueCount = feesPayments.filter(payment => payment.status === 'overdue').length;
+        const notRecordedCount = totalStudents - (paidCount + pendingCount + overdueCount);
+        
+        const totalCollected = feesPayments
+            .filter(payment => payment.status === 'paid')
+            .reduce((sum, payment) => sum + payment.amount, 0);
+            
+        const pendingAmount = feesPayments
+            .filter(payment => payment.status === 'pending' || payment.status === 'overdue')
+            .reduce((sum, payment) => sum + payment.amount, 0);
+        
+        return {
+            totalStudents,
+            paidCount,
+            pendingCount,
+            overdueCount,
+            notRecordedCount,
+            totalCollected,
+            pendingAmount,
+            paymentPercentage: totalStudents > 0 ? Math.round((paidCount / totalStudents) * 100) : 0
+        };
+    };
+
+    const stats = calculateStats();
+
     // Show loading spinner
     if (loading) {
         return (
@@ -268,254 +263,343 @@ function FeesManager({ batchId }) {
         );
     }
 
-    // Show error message if there's an error
-    if (error && !isModalOpen) {
-        return (
-            <div className="overflow-hidden bg-white rounded-lg shadow-sm">
-                <div className="p-6 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-900">Fees Management</h2>
-                </div>
-                <div className="p-6 text-red-700 bg-red-50">
-                    <p className="flex items-center">
-                        <AlertCircle className="mr-2 w-5 h-5" />
-                        {error}
-                    </p>
-                    <button 
-                        onClick={fetchFeesData} 
-                        className="px-4 py-2 mt-4 text-white bg-red-600 rounded-md hover:bg-red-700"
-                    >
-                        Try Again
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="overflow-hidden bg-white rounded-lg shadow-sm">
-            <div className="p-6 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Fees Management</h2>
-                <p className="mt-1 text-sm text-gray-500">
-                    Track and manage student fee payments
+        <div className="space-y-6">
+            {/* Dashboard Title */}
+            <div className={`${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} p-5 rounded-lg shadow-md`}>
+                <h2 className="text-2xl font-bold mb-2 flex items-center">
+                    <DollarSign className="mr-2 text-red-600" size={24} />
+                    Fees Management Dashboard
+                </h2>
+                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Track, update, and manage student fee payments efficiently
                 </p>
             </div>
 
-            {/* Search Bar */}
-            <div className="p-4 border-b border-gray-200">
-                <div className="relative">
-                    <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                        <Search className="w-5 h-5 text-gray-400" />
+            {/* Statistics Cards */}
+            <div className={`${!statsVisible ? 'hidden' : ''}`}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className={`${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md p-4 flex flex-col`}>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Total Collected</p>
+                                <h3 className="text-xl font-bold mt-1">₹{stats.totalCollected.toLocaleString()}</h3>
+                            </div>
+                            <span className="p-2 rounded-lg bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                                <TrendingUp size={20} />
+                            </span>
+                        </div>
+                        <div className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            <span className="text-green-500 font-medium">{stats.paymentPercentage}% </span>
+                            of students paid
+                        </div>
                     </div>
-                    <input
-                        type="text"
-                        placeholder="Search students by name or email"
-                        className="py-2 pr-4 pl-10 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+
+                    <div className={`${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md p-4 flex flex-col`}>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Pending Amount</p>
+                                <h3 className="text-xl font-bold mt-1">₹{stats.pendingAmount.toLocaleString()}</h3>
+                            </div>
+                            <span className="p-2 rounded-lg bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+                                <FileText size={20} />
+                            </span>
+                        </div>
+                        <div className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            <span className="text-yellow-500 font-medium">{stats.pendingCount + stats.overdueCount} </span>
+                            payments pending
+                        </div>
+                    </div>
+
+                    <div className={`${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md p-4 flex flex-col`}>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Total Students</p>
+                                <h3 className="text-xl font-bold mt-1">{stats.totalStudents}</h3>
+                            </div>
+                            <span className="p-2 rounded-lg bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                                <UserCheck size={20} />
+                            </span>
+                        </div>
+                        <div className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            <span className="text-blue-500 font-medium">{stats.notRecordedCount} </span>
+                            without payment records
+                        </div>
+                    </div>
+
+                    <div className={`${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md p-4 flex flex-col`}>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Status Breakdown</p>
+                                <h3 className="text-xl font-bold mt-1">
+                                    <span className="text-green-500">{stats.paidCount}</span> / 
+                                    <span className="text-yellow-500 ml-1">{stats.pendingCount}</span> / 
+                                    <span className="text-red-500 ml-1">{stats.overdueCount}</span>
+                                </h3>
+                            </div>
+                            <span className="p-2 rounded-lg bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400">
+                                <Calendar size={20} />
+                            </span>
+                        </div>
+                        <div className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                            Paid / Pending / Overdue
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Students List with Fees Status */}
-            <div className="overflow-x-auto">
-                {students.length === 0 ? (
-                    <div className="p-6 text-center text-gray-500">
-                        No students found in this batch.
+            {/* Action Bar */}
+            <div className={`flex flex-col sm:flex-row justify-between gap-4 items-center ${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} p-4 rounded-lg shadow-md`}>
+                <button 
+                    onClick={() => setStatsVisible(!statsVisible)}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                        darkMode 
+                            ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                    }`}
+                >
+                    {statsVisible ? 'Hide Statistics' : 'Show Statistics'}
+                </button>
+                
+                <div className="relative w-full sm:w-64">
+                    <input
+                        type="text"
+                        placeholder="Search students..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className={`pl-9 pr-4 py-2 w-full rounded-md border ${
+                            darkMode 
+                                ? 'bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-red-500' 
+                                : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500'
+                        }`}
+                    />
+                    <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                </div>
+            </div>
+            
+            {error && (
+                <div className="mb-4 p-3 bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 rounded-md shadow-sm">
+                    <div className="flex items-center">
+                        <AlertCircle className="w-5 h-5 mr-2" />
+                        {error}
                     </div>
-                ) : filteredStudents.length === 0 ? (
-                    <div className="p-6 text-center text-gray-500">
-                        No students match your search.
-                    </div>
-                ) : (
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                </div>
+            )}
+            
+            {/* Students Fees Table */}
+            <div className={`${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-md overflow-hidden`}>
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead className={`${darkMode ? 'bg-gray-700' : 'bg-gray-50'} text-left`}>
                             <tr>
-                                <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                    Student
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                    Payment Status
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                    Amount
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                    Method
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                    Actions
-                                </th>
+                                <th className="px-6 py-3 text-sm font-semibold">Name</th>
+                                <th className="px-6 py-3 text-sm font-semibold">Email</th>
+                                <th className="px-6 py-3 text-sm font-semibold">Amount</th>
+                                <th className="px-6 py-3 text-sm font-semibold">Status</th>
+                                <th className="px-6 py-3 text-sm font-semibold">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {filteredStudents.map((student) => {
-                                const payment = getPaymentStatus(student._id);
-                                
-                                return (
-                                    <tr key={student._id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <div>
-                                                    <div className="text-sm font-medium text-gray-900">
-                                                        {student.name}
-                                                    </div>
-                                                    <div className="text-sm text-gray-500">
-                                                        {student.email}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {payment ? (
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(payment.status)}`}>
-                                                    {getStatusIcon(payment.status)}
-                                                    <span className="ml-1.5">{payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}</span>
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                    Not Recorded
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">
-                                                {payment ? `₹${payment.amount}` : '-'}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">
-                                                {payment ? payment.paymentMethod.charAt(0).toUpperCase() + payment.paymentMethod.slice(1) : '-'}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                                            <button
-                                                onClick={() => handleOpenModal(student)}
-                                                className="inline-flex items-center text-red-600 hover:text-red-900"
-                                            >
-                                                <Edit className="mr-1 w-4 h-4" />
-                                                {payment ? 'Update' : 'Add Payment'}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                        <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                            {filteredStudents.length > 0 ? (
+                                filteredStudents.map(student => {
+                                    const payment = getPaymentStatus(student._id);
+                                    return (
+                                        <tr key={student._id} className={`hover:${darkMode ? 'bg-gray-700' : 'bg-gray-50'} transition-colors`}>
+                                            <td className="px-6 py-4 text-sm font-medium">{student.name}</td>
+                                            <td className="px-6 py-4 text-sm">{student.email}</td>
+                                            <td className="px-6 py-4 text-sm">
+                                                {payment ? 
+                                                    <span className="font-medium">₹{payment.amount.toLocaleString()}</span> : 
+                                                    <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Not recorded</span>
+                                                }
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {payment ? (
+                                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(payment.status)}`}>
+                                                        {getStatusIcon(payment.status)}
+                                                        <span className="ml-1 capitalize">{payment.status}</span>
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                                        <span className="capitalize">Not Recorded</span>
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button
+                                                    onClick={() => handleOpenModal(student)}
+                                                    className={`inline-flex items-center px-3 py-1.5 rounded-md text-sm font-medium ${
+                                                        darkMode
+                                                            ? 'bg-red-600/10 text-red-500 hover:bg-red-600/20'
+                                                            : 'bg-red-50 text-red-600 hover:bg-red-100'
+                                                    } transition-colors`}
+                                                >
+                                                    <Edit className="w-4 h-4 mr-1.5" />
+                                                    {payment ? 'Update' : 'Record Payment'}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-4 text-center text-sm">
+                                        {searchTerm ? 'No students found matching your search.' : 'No students enrolled in this batch.'}
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
-                )}
+                </div>
             </div>
-
+            
             {/* Payment Modal */}
             {isModalOpen && selectedStudent && (
-                <div className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50">
-                    <div className="overflow-hidden mx-auto w-full max-w-md bg-white rounded-lg shadow-lg">
-                        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                            <h3 className="text-lg font-medium text-gray-900">
-                                {feesPayments.some(p => p.student && p.student._id === selectedStudent._id) 
-                                    ? 'Update Payment Record' 
-                                    : 'Add Payment Record'}
-                            </h3>
-                            <p className="mt-1 text-sm text-gray-500">
-                                Student: {selectedStudent.name}
-                            </p>
-                        </div>
-                        
-                        {error && (
-                            <div className="px-6 pt-4 text-sm text-red-600">
-                                <div className="flex items-center p-3 bg-red-50 rounded-md">
-                                    <AlertCircle className="mr-2 w-4 h-4" />
-                                    {error}
-                                </div>
-                            </div>
-                        )}
-                        
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            <div>
-                                <label className="block mb-1 text-sm font-medium text-gray-700">
-                                    Amount (₹)
-                                </label>
-                                <input
-                                    type="number"
-                                    name="amount"
-                                    value={paymentForm.amount}
-                                    onChange={handleInputChange}
-                                    required
-                                    min="1"
-                                    className="px-3 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                />
-                            </div>
-                            
-                            <div>
-                                <label className="block mb-1 text-sm font-medium text-gray-700">
-                                    Payment Method
-                                </label>
-                                <select
-                                    name="paymentMethod"
-                                    value={paymentForm.paymentMethod}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="px-3 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                >
-                                    <option value="offline">Offline</option>
-                                    <option value="online">Online</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label className="block mb-1 text-sm font-medium text-gray-700">
-                                    Status
-                                </label>
-                                <select
-                                    name="status"
-                                    value={paymentForm.status}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="px-3 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                >
-                                    <option value="paid">Paid</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="overdue">Overdue</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label className="block mb-1 text-sm font-medium text-gray-700">
-                                    Remarks (Optional)
-                                </label>
-                                <textarea
-                                    name="remarks"
-                                    value={paymentForm.remarks}
-                                    onChange={handleInputChange}
-                                    rows="3"
-                                    className="px-3 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    placeholder="Add any additional notes..."
-                                ></textarea>
-                            </div>
-                            
-                            <div className="flex justify-end pt-4 space-x-3">
-                                <button
-                                    type="button"
+                <div className={`fixed inset-0 z-50 overflow-y-auto ${darkMode ? 'bg-gray-900 bg-opacity-75' : 'bg-black bg-opacity-50'}`}>
+                    <div className="flex items-center justify-center min-h-screen px-4">
+                        <div className={`relative w-full max-w-md rounded-lg shadow-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} overflow-hidden`}>
+                            <div className={`flex justify-between items-center px-6 py-4 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} bg-gradient-to-r from-red-500 to-red-600`}>
+                                <h3 className="text-lg font-semibold text-white">
+                                    {feesPayments.some(p => p.student && p.student._id === selectedStudent._id) 
+                                        ? 'Update Payment Record' 
+                                        : 'Record New Payment'}
+                                </h3>
+                                <button 
                                     onClick={handleCloseModal}
-                                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md border border-gray-300 hover:bg-gray-50"
-                                    disabled={submitting}
+                                    className="text-white hover:text-gray-200 focus:outline-none"
                                 >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md border border-transparent shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                    disabled={submitting}
-                                >
-                                    {submitting ? (
-                                        <span className="flex items-center">
-                                            <span className="mr-2 w-4 h-4 rounded-full border-2 border-white animate-spin border-t-transparent"></span>
-                                            Saving...
-                                        </span>
-                                    ) : (
-                                        'Save'
-                                    )}
+                                    <X className="w-5 h-5" />
                                 </button>
                             </div>
-                        </form>
+                            
+                            <div className={`px-6 py-4 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                <div className="mb-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-700">
+                                    <p className="text-sm">
+                                        <span className="font-medium">Student:</span> {selectedStudent.name}
+                                    </p>
+                                    <p className="text-sm mt-1">
+                                        <span className="font-medium">Email:</span> {selectedStudent.email}
+                                    </p>
+                                </div>
+                                
+                                {error && (
+                                    <div className="mb-4 p-3 bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 rounded-md text-sm">
+                                        {error}
+                                    </div>
+                                )}
+                                
+                                <form onSubmit={handleSubmit} className="space-y-5">
+                                    <div>
+                                        <label className={`block mb-1 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            Amount (₹)
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="amount"
+                                            value={paymentForm.amount}
+                                            onChange={handleInputChange}
+                                            required
+                                            min="1"
+                                            className={`px-3 py-2 w-full rounded-md border ${
+                                                darkMode 
+                                                    ? 'bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-red-500' 
+                                                    : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500'
+                                            }`}
+                                        />
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className={`block mb-1 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                Payment Method
+                                            </label>
+                                            <select
+                                                name="paymentMethod"
+                                                value={paymentForm.paymentMethod}
+                                                onChange={handleInputChange}
+                                                required
+                                                className={`px-3 py-2 w-full rounded-md border ${
+                                                    darkMode 
+                                                        ? 'bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-red-500' 
+                                                        : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500'
+                                                }`}
+                                            >
+                                                <option value="offline">Offline</option>
+                                                <option value="online">Online</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div>
+                                            <label className={`block mb-1 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                Status
+                                            </label>
+                                            <select
+                                                name="status"
+                                                value={paymentForm.status}
+                                                onChange={handleInputChange}
+                                                required
+                                                className={`px-3 py-2 w-full rounded-md border ${
+                                                    darkMode 
+                                                        ? 'bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-red-500' 
+                                                        : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500'
+                                                }`}
+                                            >
+                                                <option value="paid">Paid</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="overdue">Overdue</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label className={`block mb-1 text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            Remarks (Optional)
+                                        </label>
+                                        <textarea
+                                            name="remarks"
+                                            value={paymentForm.remarks}
+                                            onChange={handleInputChange}
+                                            rows="3"
+                                            className={`px-3 py-2 w-full rounded-md border ${
+                                                darkMode 
+                                                    ? 'bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-red-500' 
+                                                    : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500'
+                                            }`}
+                                            placeholder="Add any additional notes about the payment..."
+                                        ></textarea>
+                                    </div>
+                                    
+                                    <div className="flex justify-end pt-4 space-x-3">
+                                        <button
+                                            type="button"
+                                            onClick={handleCloseModal}
+                                            className={`px-4 py-2 text-sm font-medium ${
+                                                darkMode 
+                                                    ? 'text-gray-300 bg-gray-700 border-gray-600 hover:bg-gray-600' 
+                                                    : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-50'
+                                            } rounded-md border`}
+                                            disabled={submitting}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md border border-transparent shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                            disabled={submitting}
+                                        >
+                                            {submitting ? (
+                                                <span className="flex items-center">
+                                                    <span className="mr-2 w-4 h-4 rounded-full border-2 border-white animate-spin border-t-transparent"></span>
+                                                    Saving...
+                                                </span>
+                                            ) : (
+                                                'Save Payment'
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

@@ -4,6 +4,7 @@ import { Plus, Users, BookOpen, Search, RefreshCcw, Trash2 } from 'lucide-react'
 import axios from 'axios';
 import TeacherNavbar from '../../components/TeacherNavbar';
 import { toast } from 'react-toastify';
+import { useDarkMode } from '../../utils/DarkModeContext';
 
 function BatchesList() {
     const [batches, setBatches] = useState([]);
@@ -13,6 +14,7 @@ function BatchesList() {
     const [filter, setFilter] = useState('all');
     const [currentTeacher, setCurrentTeacher] = useState(null);
     const navigate = useNavigate();
+    const { darkMode } = useDarkMode();
 
     useEffect(() => {
         // Get teacher info from localStorage
@@ -87,32 +89,41 @@ function BatchesList() {
     });
 
     const getStatusColor = (status) => {
-        switch (status) {
-            case 'active': return 'bg-green-100 text-green-800';
-            case 'completed': return 'bg-blue-100 text-blue-800';
-            case 'cancelled': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
+        if (darkMode) {
+            switch (status) {
+                case 'active': return 'bg-green-900/30 text-green-300';
+                case 'completed': return 'bg-blue-900/30 text-blue-300';
+                case 'cancelled': return 'bg-red-900/30 text-red-300';
+                default: return 'bg-gray-800 text-gray-300';
+            }
+        } else {
+            switch (status) {
+                case 'active': return 'bg-green-100 text-green-800';
+                case 'completed': return 'bg-blue-100 text-blue-800';
+                case 'cancelled': return 'bg-red-100 text-red-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
         }
     };
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} flex items-center justify-center`}>
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
             </div>
         );
     }
 
     return (
-        <div>
+        <div className={darkMode ? 'bg-gray-900' : ''}>
             <TeacherNavbar />
-            <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+            <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} py-8 px-4 sm:px-6 lg:px-8`}>
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Batches</h1>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <h1 className={`text-2xl font-bold ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>Batches</h1>
+                            <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                 Manage your classroom batches and students
                             </p>
                         </div>
@@ -136,14 +147,22 @@ function BatchesList() {
                                 placeholder="Search batches..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                className={`pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 ${
+                                    darkMode 
+                                        ? 'bg-gray-800 border-gray-700 text-gray-100 placeholder:text-gray-500' 
+                                        : 'bg-white border-gray-300'
+                                }`}
                             />
                         </div>
                         <div className="flex gap-4">
                             <select
                                 value={filter}
                                 onChange={(e) => setFilter(e.target.value)}
-                                className="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                className={`border rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500 ${
+                                    darkMode 
+                                        ? 'bg-gray-800 border-gray-700 text-gray-100' 
+                                        : 'bg-white border-gray-300'
+                                }`}
                             >
                                 <option value="all">All Batches</option>
                                 <option value="active">Active</option>
@@ -152,7 +171,11 @@ function BatchesList() {
                             </select>
                             <button
                                 onClick={fetchBatches}
-                                className="p-2 text-gray-600 hover:text-red-600 rounded-lg hover:bg-red-50"
+                                className={`p-2 ${
+                                    darkMode 
+                                        ? 'text-gray-400 hover:text-red-400 hover:bg-gray-800' 
+                                        : 'text-gray-600 hover:text-red-600 hover:bg-red-50'
+                                } rounded-lg`}
                             >
                                 <RefreshCcw className="h-5 w-5" />
                             </button>
@@ -161,31 +184,35 @@ function BatchesList() {
 
                     {/* Error Message */}
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
+                        <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-red-900/30 text-red-300' : 'bg-red-50 text-red-700'}`}>
                             {error}
                         </div>
                     )}
 
                     {!currentTeacher ? (
                         <div className="text-center py-12">
-                            <h3 className="text-lg font-medium text-gray-900">Authentication Required</h3>
-                            <p className="mt-2 text-gray-500">Please log in to view your batches</p>
+                            <h3 className={`text-lg font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>Authentication Required</h3>
+                            <p className={`mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Please log in to view your batches</p>
                         </div>
                     ) : (
                         <>
                             {/* Batches Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {filteredBatches.map(batch => (
-                                    <div key={batch._id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                                    <div key={batch._id} className={`${
+                                        darkMode 
+                                            ? 'bg-gray-800 hover:shadow-gray-700' 
+                                            : 'bg-white hover:shadow-md'
+                                        } rounded-lg shadow-sm transition-shadow duration-200`}>
                                         <div className="p-6">
                                             <div className="flex justify-between items-start">
                                                 <div>
-                                                    <h3 className="text-lg font-semibold text-gray-900">
+                                                    <h3 className={`text-lg font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
                                                         {batch.name}
                                                     </h3>
-                                                    <p className="text-sm text-gray-500">Code: {batch.batch_code}</p>
-                                                    <p className="text-sm text-gray-500">Class: {batch.class}</p>
-                                                    <p className="text-sm text-gray-500 mt-1">
+                                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Code: {batch.batch_code}</p>
+                                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Class: {batch.class}</p>
+                                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
                                                         Teacher: {currentTeacher?.name || 'Not assigned'}
                                                     </p>
                                                 </div>
@@ -194,7 +221,7 @@ function BatchesList() {
                                                 </span>
                                             </div>
 
-                                            <div className="mt-4 flex items-center text-sm text-gray-500">
+                                            <div className={`mt-4 flex items-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                                 <Users className="h-4 w-4 mr-2" />
                                                 {batch.students?.length || 0} Students
                                             </div>
@@ -202,13 +229,13 @@ function BatchesList() {
                                             <div className="mt-6 flex justify-between items-center">
                                                 <Link
                                                     to={`/teacher/batches/${batch._id}`}
-                                                    className="text-red-600 hover:text-red-800 text-sm font-medium"
+                                                    className={`${darkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-800'} text-sm font-medium`}
                                                 >
                                                     View Details →
                                                 </Link>
                                                 <button
                                                     onClick={(e) => handleDeleteBatch(batch._id, e)}
-                                                    className="text-gray-500 hover:text-red-600 transition-colors"
+                                                    className={`${darkMode ? 'text-gray-400 hover:text-red-400' : 'text-gray-500 hover:text-red-600'} transition-colors`}
                                                     title="Delete Batch"
                                                 >
                                                     <Trash2 className="h-5 w-5" />
@@ -222,13 +249,13 @@ function BatchesList() {
                             {/* Empty State */}
                             {filteredBatches.length === 0 && (
                                 <div className="text-center py-12">
-                                    <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
-                                    <h3 className="mt-2 text-sm font-medium text-gray-900">
+                                    <BookOpen className={`mx-auto h-12 w-12 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`} />
+                                    <h3 className={`mt-2 text-sm font-medium ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
                                         {searchTerm 
                                             ? "No matching batches found" 
                                             : "You haven't created any batches yet"}
                                     </h3>
-                                    <p className="mt-1 text-sm text-gray-500">
+                                    <p className={`mt-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                         {searchTerm 
                                             ? "Try adjusting your search terms"
                                             : "Get started by creating a new batch"}

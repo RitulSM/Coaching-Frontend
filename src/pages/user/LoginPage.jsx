@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { User } from 'lucide-react';
 import axios from 'axios';
+import { useDarkMode } from '../../utils/DarkModeContext';
+import ThemeToggle from '../../components/ThemeToggle';
 
 
 function UserLoginPage() {
@@ -12,6 +14,7 @@ function UserLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { darkMode } = useDarkMode();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,37 +49,42 @@ function UserLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-xl overflow-hidden">
+    <div className={`flex justify-center items-center p-4 min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-100'}`}>
+      <div className={`overflow-hidden w-full max-w-md ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-xl`}>
+        {/* Theme Toggle */}
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
+        
         {/* Header with gradient */}
-        <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-6">
+        <div className="p-6 bg-gradient-to-r from-indigo-500 to-indigo-600">
           <div className="flex justify-center">
-            <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center shadow-md">
-              <User className="h-8 w-8 text-indigo-600" />
+            <div className="flex justify-center items-center w-16 h-16 bg-white rounded-full shadow-md">
+              <User className="w-8 h-8 text-indigo-600" />
             </div>
           </div>
-          <h1 className="mt-4 text-2xl font-bold text-white text-center">
+          <h1 className="mt-4 text-2xl font-bold text-center text-white">
             Welcome Back, Student!
           </h1>
-          <p className="text-indigo-100 text-center mt-1">Please enter your details to login</p>
+          <p className="mt-1 text-center text-indigo-100">Please enter your details to login</p>
         </div>
         
         {/* Login Form */}
         <div className="p-8">
           {successMessage && (
-            <div className="mb-6 p-3 bg-green-50 text-green-700 rounded-lg text-sm">
+            <div className="p-3 mb-6 text-sm text-green-700 bg-green-50 rounded-lg">
               {successMessage}
             </div>
           )}
           {error && (
-            <div className="mb-6 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+            <div className="p-3 mb-6 text-sm text-red-700 bg-red-50 rounded-lg">
               {error}
             </div>
           )}
           
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Email Address
               </label>
               <input
@@ -85,13 +93,13 @@ function UserLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full px-4 py-3 rounded-lg border bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className={`px-4 py-3 mt-1 w-full ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-50'} rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Password
               </label>
               <input
@@ -100,7 +108,7 @@ function UserLoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 w-full px-4 py-3 rounded-lg border bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className={`px-4 py-3 mt-1 w-full ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-50'} rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-500`}
                 placeholder="Enter your password"
               />
             </div>
@@ -115,13 +123,13 @@ function UserLoginPage() {
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-600">
+            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Are you a parent?{' '}
               <Link to="/parent/login" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Login here
               </Link>
             </p>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className={`mt-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Don't have an account?{' '}
               <Link to="/user/register" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Sign up

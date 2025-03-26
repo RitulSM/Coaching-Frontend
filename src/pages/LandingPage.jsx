@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { ArrowRight, BookOpen, Award, Clock, Users, MessageSquare, Zap, Play, GraduationCap } from "lucide-react"
 import StudentNavbar from "../components/StudentNavbar";
+import { useDarkMode } from "../utils/DarkModeContext";
 
 const features = [
   {
@@ -39,6 +40,7 @@ const features = [
 function LandingPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const { darkMode } = useDarkMode();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -52,7 +54,7 @@ function LandingPage() {
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen overflow-x-hidden ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <StudentNavbar />
 
       {/* Hero Section - New Design */}
@@ -60,10 +62,10 @@ function LandingPage() {
         <div className="grid grid-cols-1 gap-12 items-center lg:grid-cols-2">
           {/* Left Column - Content */}
           <div className="space-y-8">
-            <h1 className="text-4xl font-bold leading-tight md:text-6xl">
+            <h1 className={`text-4xl font-bold leading-tight md:text-6xl ${darkMode ? 'text-gray-100' : ''}`}>
               Let's Learn New Course & Gain More Skills
             </h1>
-            <p className="text-lg text-gray-600 md:text-xl">
+            <p className={`text-lg md:text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Personalized coaching to help you excel in your studies. 
               Our expert educators and tailored learning paths will guide you to success.
             </p>
@@ -75,8 +77,8 @@ function LandingPage() {
                   <Users className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold">50+</p>
-                  <p className="text-gray-600">Expert Mentors</p>
+                  <p className={`text-xl font-bold ${darkMode ? 'text-gray-100' : ''}`}>50+</p>
+                  <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Expert Mentors</p>
                 </div>
               </div>
               <div className="flex gap-3 items-center">
@@ -84,8 +86,8 @@ function LandingPage() {
                   <BookOpen className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-xl font-bold">50+</p>
-                  <p className="text-gray-600">Batches</p>
+                  <p className={`text-xl font-bold ${darkMode ? 'text-gray-100' : ''}`}>50+</p>
+                  <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Batches</p>
                 </div>
               </div>
             </div>
@@ -109,7 +111,7 @@ function LandingPage() {
                   </Link>
                   <Link 
                     to="/student/batches"
-                    className="flex gap-2 items-center text-gray-700 transition-colors hover:text-blue-600"
+                    className={`flex gap-2 items-center transition-colors ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'}`}
                   >
                     <div className="p-2 bg-blue-100 rounded-full">
                       <Play className="w-5 h-5 text-blue-600" />
@@ -131,17 +133,17 @@ function LandingPage() {
             />
             
             {/* Floating Elements */}
-            <div className="absolute top-4 right-4 p-3 bg-white rounded-xl shadow-lg">
+            <div className={`absolute top-4 right-4 p-3 rounded-xl shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
               <GraduationCap className="w-6 h-6 text-blue-600" />
             </div>
-            <div className="absolute bottom-4 left-4 p-4 bg-white rounded-xl shadow-lg">
+            <div className={`absolute bottom-4 left-4 p-4 rounded-xl shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
               <div className="flex gap-3 items-center">
                 <div className="p-2 bg-blue-100 rounded-lg">
                   <BookOpen className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="font-semibold">Online Learning</p>
-                  <p className="text-sm text-gray-600">Best Way to Learn</p>
+                  <p className={`font-semibold ${darkMode ? 'text-gray-100' : ''}`}>Online Learning</p>
+                  <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Best Way to Learn</p>
                 </div>
               </div>
             </div>
@@ -149,102 +151,142 @@ function LandingPage() {
         </div>
       </main>
 
-      {/* Why Choose EduCoach Section */}
-      <div className="py-16 bg-gray-50">
-        <div className="px-4 mx-auto max-w-7xl">
-          <h2 className="mb-12 text-3xl font-bold text-center">Why Choose EduCoach?</h2>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+      {/* Features Section */}
+      <section className={`py-16 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+        <div className="container px-4 mx-auto">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className={`text-3xl font-bold md:text-4xl mb-4 ${darkMode ? 'text-gray-100' : ''}`}>
+              Our Unique Learning Features
+            </h2>
+            <p className={`text-lg ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              We provide innovative tools and methods to enhance your educational journey
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {features.map((feature, index) => (
-              <div
-                key={index}
-                className="p-8 bg-white rounded-xl shadow-sm transition-shadow hover:shadow-md"
+              <div 
+                key={index} 
+                className={`p-6 rounded-xl transition-all hover:shadow-md ${darkMode ? 'bg-gray-700 hover:bg-gray-700/80' : 'bg-white hover:bg-gray-50'}`}
               >
-                <div className="flex flex-col items-center text-center">
-                  <div className="p-3 mb-4 bg-blue-50 rounded-full">
-                    {feature.icon}
-                  </div>
-                  <h3 className="mb-3 text-xl font-semibold">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                <div className="p-3 mb-4 bg-blue-50 rounded-full w-fit">
+                  {feature.icon}
                 </div>
+                <h3 className={`mb-2 text-xl font-bold ${darkMode ? 'text-gray-100' : ''}`}>{feature.title}</h3>
+                <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
+      {/* Courses Preview */}
+      <section className="py-16">
+        <div className="container px-4 mx-auto">
+          <div className="flex flex-wrap justify-between items-center mb-12">
+            <div>
+              <h2 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-gray-100' : ''}`}>Popular Course Categories</h2>
+              <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>
+                Explore our most sought-after learning paths
+              </p>
+            </div>
+            <Link 
+              to="/student/batches" 
+              className={`flex items-center mt-4 lg:mt-0 ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
+            >
+              View All Categories
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+          </div>
 
-      {/* Testimonials section - with new styling */}
-      <div className="py-12 my-24 bg-gray-50">
-        <h3 className="mb-12 text-3xl font-bold text-center text-gray-800">Student Success Stories</h3>
-        <div className="grid grid-cols-1 gap-8 px-4 mx-auto max-w-7xl md:grid-cols-2">
-          {/* Testimonial 1 */}
-          <div className="p-8 bg-white rounded-xl shadow-lg">
-            <div className="flex flex-col h-full">
-              <div className="flex-1">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                    </svg>
-                  ))}
-                </div>
-                <p className="mb-6 italic text-black">"EduCoach helped me improve my math scores from C to A+. The personalized attention and practice tests were exactly what I needed. My confidence has skyrocketed!"</p>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {/* Course Category Cards */}
+            {[
+              { name: "Mathematics", count: 15, icon: <div className="p-3 bg-red-100 rounded-lg"><BookOpen className="w-6 h-6 text-red-600" /></div> },
+              { name: "Science", count: 12, icon: <div className="p-3 bg-green-100 rounded-lg"><Zap className="w-6 h-6 text-green-600" /></div> },
+              { name: "English", count: 10, icon: <div className="p-3 bg-blue-100 rounded-lg"><MessageSquare className="w-6 h-6 text-blue-600" /></div> },
+              { name: "Computer Science", count: 8, icon: <div className="p-3 bg-purple-100 rounded-lg"><Users className="w-6 h-6 text-purple-600" /></div> },
+            ].map((category, index) => (
+              <div 
+                key={index} 
+                className={`p-6 rounded-xl transition-all hover:shadow-md ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-50'}`}
+              >
+                {category.icon}
+                <h3 className={`mt-4 mb-2 text-xl font-bold ${darkMode ? 'text-gray-100' : ''}`}>{category.name}</h3>
+                <p className={darkMode ? 'text-gray-400' : 'text-gray-500'}>{category.count} courses</p>
+                <Link 
+                  to="/student/batches" 
+                  className={`flex items-center mt-4 transition-colors ${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'}`}
+                >
+                  Explore
+                  <ArrowRight className="ml-1 w-4 h-4" />
+                </Link>
               </div>
-              <div className="flex items-center mt-4">
-                <div className="flex justify-center items-center w-12 h-12 bg-blue-100 rounded-full">
-                  <span className="font-bold text-blue-800">AP</span>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-900">Anisha Patel</p>
-                  <p className="text-sm text-gray-600">Mathematics Student</p>
-                </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className={`py-12 ${darkMode ? 'text-gray-300 bg-gray-800' : 'text-gray-600 bg-gray-50'}`}>
+        <div className="container px-4 mx-auto">
+          <div className="flex flex-col justify-between md:flex-row">
+            <div className="mb-8 md:mb-0">
+              <div className="flex items-center">
+                <BookOpen className="mr-2 w-8 h-8 text-blue-600" />
+                <span className={`text-2xl font-bold ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>EduCoach</span>
+              </div>
+              <p className="mt-2 max-w-xs">
+                Empowering students to achieve academic excellence through personalized learning.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4">
+              {/* Quick Links */}
+              <div>
+                <h3 className={`mb-4 text-sm font-semibold uppercase ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Quick Links</h3>
+                <ul className="space-y-2">
+                  {['Home', 'About', 'Courses', 'Contact'].map((link) => (
+                    <li key={link}>
+                      <a 
+                        href="#" 
+                        className={`transition-colors ${darkMode ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* Help */}
+              <div>
+                <h3 className={`mb-4 text-sm font-semibold uppercase ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>Help</h3>
+                <ul className="space-y-2">
+                  {['FAQs', 'Support', 'Privacy Policy', 'Terms of Service'].map((link) => (
+                    <li key={link}>
+                      <a 
+                        href="#" 
+                        className={`transition-colors ${darkMode ? 'hover:text-blue-400' : 'hover:text-blue-600'}`}
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
           
-          {/* Testimonial 2 */}
-          <div className="p-8 bg-white rounded-xl shadow-lg">
-            <div className="flex flex-col h-full">
-              <div className="flex-1">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                    </svg>
-                  ))}
-                </div>
-                <p className="mb-6 italic text-black">"The study groups and interactive sessions made learning physics enjoyable. I got accepted to my dream university thanks to the preparation I received at EduCoach."</p>
-              </div>
-              <div className="flex items-center mt-4">
-                <div className="flex justify-center items-center w-12 h-12 bg-blue-100 rounded-full">
-                  <span className="font-bold text-blue-800">MK</span>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-900">Michael Kim</p>
-                  <p className="text-sm text-gray-600">Physics Student</p>
-                </div>
-              </div>
-            </div>
+          <div className={`pt-8 mt-8 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <p className="text-center">
+              &copy; {new Date().getFullYear()} EduCoach. All rights reserved.
+            </p>
           </div>
         </div>
-      </div>
-
-      {/* CTA section with updated design */}
-      <div className="container px-4 mx-auto mb-20">
-        <div className="p-12 text-center text-white bg-blue-600 rounded-2xl">
-          <h3 className="mb-6 text-3xl font-bold">Ready to Transform Your Academic Journey?</h3>
-          <p className="mx-auto mb-8 max-w-2xl text-xl">Join thousands of students who have achieved their academic goals with EduCoach.</p>
-          <Link
-            to="/user/signup"
-            className="inline-flex justify-center items-center px-8 py-4 text-lg font-medium text-blue-600 bg-white rounded-full border border-white hover:bg-blue-50"
-          >
-            Start Learning
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
-        </div>
-      </div>
+      </footer>
     </div>
-  );
+  )
 }
 
-export default LandingPage;
+export default LandingPage

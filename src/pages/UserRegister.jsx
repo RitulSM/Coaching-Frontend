@@ -1,11 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { UserPlus, Users } from 'lucide-react';
+import { useDarkMode } from '../utils/DarkModeContext';
 
 const UserRegisterComponent = () => {
+  const { darkMode } = useDarkMode(); // Use the dark mode hook
+
   return (
-    <div className="flex justify-center items-center p-4 min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="overflow-hidden w-full max-w-md bg-white rounded-xl shadow-xl">
+    <div className={`flex justify-center items-center p-4 min-h-screen ${
+      darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-100'
+    }`}>
+      <div className={`overflow-hidden w-full max-w-md ${
+        darkMode ? 'bg-gray-800' : 'bg-white'
+      } rounded-xl shadow-xl`}>
         {/* Header with gradient */}
         <div className="p-6 bg-gradient-to-r from-indigo-500 to-indigo-600">
           <div className="flex justify-center">
@@ -25,7 +32,11 @@ const UserRegisterComponent = () => {
         <div className="p-8">
           <div className="space-y-4">
             <Link to="/user/signup" className="block">
-              <button className="flex justify-center items-center px-4 py-3 w-full font-semibold text-white bg-indigo-600 rounded-lg transition-all duration-200 transform hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:-translate-y-1">
+              <button className={`flex justify-center items-center px-4 py-3 w-full font-semibold rounded-lg transition-all duration-200 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                darkMode 
+                  ? 'text-white bg-indigo-600 hover:bg-indigo-700' 
+                  : 'text-white bg-indigo-600 hover:bg-indigo-700'
+              }`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="mr-2 w-5 h-5"
@@ -44,8 +55,12 @@ const UserRegisterComponent = () => {
               </button>
             </Link>
             
-            <Link to="/user/signup" className="block">
-              <button className="flex justify-center items-center px-4 py-3 w-full font-semibold text-indigo-600 bg-white rounded-lg border-2 border-indigo-600 transition-all duration-200 transform hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:-translate-y-1">
+            <Link to="/parent/signup" className="block">
+              <button className={`flex justify-center items-center px-4 py-3 w-full font-semibold rounded-lg border-2 transition-all duration-200 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                darkMode 
+                  ? 'text-indigo-400 border-indigo-400 hover:bg-indigo-900/30' 
+                  : 'text-indigo-600 border-indigo-600 hover:bg-indigo-50'
+              }`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="mr-2 w-5 h-5"
@@ -66,11 +81,14 @@ const UserRegisterComponent = () => {
           </div>
           
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-500">
+            <p className={`text-sm ${
+              darkMode ? 'text-gray-400' : 'text-gray-500'
+            }`}>
               Already have an account?{' '}
               <Link
                 to="/user/login"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                className={`font-medium text-indigo-600 hover:text-indigo-500 ${
+                  darkMode ? 'hover:text-indigo-400' : ''}`}
               >
                 Sign in
               </Link>
@@ -82,4 +100,4 @@ const UserRegisterComponent = () => {
   );
 };
 
-export default UserRegisterComponent; 
+export default UserRegisterComponent;
