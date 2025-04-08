@@ -130,12 +130,23 @@ function TimetableViewer({ batchId, userType = 'student' }) {
     const getPeriodsForDay = () => {
         return timetable[selectedDay] || [];
     };
-
+    const getWeekRange = () => {
+        const currentDate = new Date();
+        const first = currentDate.getDate() - currentDate.getDay() + 1;
+        const last = first + 5;
+        const monday = new Date(currentDate.setDate(first));
+        const saturday = new Date(currentDate.setDate(last));
+        const format = (d) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        return `${format(monday)} - ${format(saturday)}`;
+    };
     return (
-        <div className={darkMode ? 'text-gray-100' : 'text-gray-900'}>
-            <h2 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
-                Class Timetable
-            </h2>
+        <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-sm`}>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className={`text-xl font-semibold ${darkMode ? 'text-gray-200' : ''}`}>Class Timetable</h2>
+                <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {getWeekRange()}
+                </span>
+            </div>
 
             {/* Day Selector */}
             <div className="overflow-x-auto mb-6">

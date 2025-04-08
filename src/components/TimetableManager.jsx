@@ -193,6 +193,15 @@ function TimetableManager({ batchId }) {
         const periods = timetable[selectedDay] || [];
         return periods.sort((a, b) => a.hour - b.hour);
     };
+    const getWeekRange = () => {
+        const currentDate = new Date();
+        const first = currentDate.getDate() - currentDate.getDay() + 1;
+        const last = first + 5;
+        const monday = new Date(currentDate.setDate(first));
+        const saturday = new Date(currentDate.setDate(last));
+        const format = (d) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        return `${format(monday)} - ${format(saturday)}`;
+    };
 
     if (loading) {
         return (
@@ -204,7 +213,12 @@ function TimetableManager({ batchId }) {
 
     return (
         <div className={`p-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white'} rounded-lg shadow-sm`}>
-            <h2 className={`text-xl font-semibold mb-6 ${darkMode ? 'text-gray-200' : ''}`}>Class Timetable</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className={`text-xl font-semibold ${darkMode ? 'text-gray-200' : ''}`}>Class Timetable</h2>
+                <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {getWeekRange()}
+                </span>
+            </div>
             
             {error && (
                 <div className="bg-red-50 text-red-700 p-3 rounded-md mb-4 flex items-start">

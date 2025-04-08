@@ -105,6 +105,15 @@ function AttendanceMarker({ batchId, students }) {
         setIsAttendanceSubmitted(false);
     };
 
+    const handleMarkAllPresent = () => {
+        // Update attendance state to mark all students as present
+        setAttendance(prev => prev.map(record => ({
+            ...record,
+            status: 'present'
+        })));
+        setSuccess('All students marked as present');
+    };
+
     const handleSubmit = async () => {
         // Check if any student has unselected status
         const hasUnselectedStatus = attendance.some(record => !record.status);
@@ -322,6 +331,23 @@ function AttendanceMarker({ batchId, students }) {
                 </div>
                 
                 <div className="overflow-x-auto rounded-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}">
+                    <div className={`p-3 ${darkMode ? 'bg-gray-750' : 'bg-gray-50'} flex justify-between items-center border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <h3 className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Student Attendance</h3>
+                        {!existingAttendanceForDate || isEditing ? (
+                            <button
+                                type="button"
+                                onClick={handleMarkAllPresent}
+                                className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md ${
+                                    darkMode 
+                                        ? 'bg-green-700 text-white hover:bg-green-600' 
+                                        : 'bg-green-100 text-green-800 hover:bg-green-200'
+                                } transition-colors duration-150`}
+                            >
+                                <Check className="mr-1 w-4 h-4" />
+                                Select All Present
+                            </button>
+                        ) : null}
+                    </div>
                     <table className={`min-w-full divide-y ${darkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
                         <thead className={darkMode ? 'bg-gray-700' : 'bg-gray-50'}>
                             <tr>
