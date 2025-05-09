@@ -23,7 +23,7 @@ function ParentAttendanceView({ batchId, studentId }) {
             if (!parentData) throw new Error('Not authenticated');
 
             const response = await axios.get(
-                `http://localhost:3000/user/parent/batches/${batchId}/student-attendance/${studentId}`,
+                `https://coaching-backend-gamma.vercel.app/user/parent/batches/${batchId}/student-attendance/${studentId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${parentData.token}`,

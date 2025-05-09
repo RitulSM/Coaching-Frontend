@@ -20,7 +20,7 @@ function ParentLoginPage() {
         setError('');
 
         try {
-            const response = await axios.post('http://localhost:3000/user/login/parent', {
+            const response = await axios.post('https://coaching-backend-gamma.vercel.app/user/login/parent', {
                 email: formData.email,
                 password: formData.password
             });

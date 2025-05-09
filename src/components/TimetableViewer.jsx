@@ -52,7 +52,7 @@ function TimetableViewer({ batchId, userType = 'student' }) {
                     return;
                 }
                 
-                endpoint = `http://localhost:3000/user/parent/batches/${batchId}/timetable?studentId=${studentId}`;
+                endpoint = `https://coaching-backend-gamma.vercel.app/user/parent/batches/${batchId}/timetable?studentId=${studentId}`;
             } else {
                 userData = localStorage.getItem('user');
                 if (!userData) {
@@ -61,7 +61,7 @@ function TimetableViewer({ batchId, userType = 'student' }) {
                     return;
                 }
                 
-                endpoint = `http://localhost:3000/user/batches/${batchId}/timetable`;
+                endpoint = `https://coaching-backend-gamma.vercel.app/user/batches/${batchId}/timetable`;
             }
 
             const { token } = JSON.parse(userData);

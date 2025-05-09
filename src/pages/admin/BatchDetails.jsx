@@ -41,7 +41,7 @@ function BatchDetails() {
             }
 
             const { token } = JSON.parse(teacherData);
-            const response = await axios.get(`http://localhost:3000/admin/batches/${batchId}`, {
+            const response = await axios.get(`https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -71,7 +71,7 @@ function BatchDetails() {
 
                 const { token } = JSON.parse(teacherData);
                 const response = await axios.get(
-                    `http://localhost:3000/admin/batches/${batchId}/announcements`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/announcements`,
                     {
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -108,7 +108,7 @@ function BatchDetails() {
             
             if (deleteItemType === 'announcement') {
                 const response = await axios.delete(
-                    `http://localhost:3000/admin/batches/${batchId}/announcements/${deleteItemId}`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/announcements/${deleteItemId}`,
                     {
                         headers: {
                             'Authorization': `Bearer ${teacherData.id}`,
@@ -123,7 +123,7 @@ function BatchDetails() {
                 }
             } else if (deleteItemType === 'student') {
                 const response = await axios.delete(
-                    `http://localhost:3000/admin/batches/${batchId}/students/${deleteItemId}`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/students/${deleteItemId}`,
                     {
                         headers: {
                             'Authorization': `Bearer ${teacherData.id}`,
@@ -151,7 +151,7 @@ function BatchDetails() {
         try {
             const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
             const response = await axios.delete(
-                `http://localhost:3000/admin/batches/${batchId}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${teacherData.id}`,

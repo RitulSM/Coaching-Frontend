@@ -41,7 +41,7 @@ function ParentBatchDetail() {
                 });
 
                 const response = await axios.get(
-                    `http://localhost:3000/user/parent/batches/${batchId}`,
+                    `https://coaching-backend-gamma.vercel.app/user/parent/batches/${batchId}`,
                     {
                         headers: {
                             'Authorization': `Bearer ${userData.token}`,

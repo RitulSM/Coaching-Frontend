@@ -23,7 +23,7 @@ function StudentAttendance({ batchId }) {
             if (!userData) throw new Error('Not authenticated');
 
             const response = await axios.get(
-                `http://localhost:3000/user/student/batches/${batchId}/attendance`,
+                `https://coaching-backend-gamma.vercel.app/user/student/batches/${batchId}/attendance`,
                 {
                     headers: {
                         'Authorization': `Bearer ${userData.token}`,

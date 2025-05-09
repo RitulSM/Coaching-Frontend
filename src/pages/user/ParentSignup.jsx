@@ -31,7 +31,7 @@ function ParentSignupPage() {
     try {
       parentRegisterSchema.parse({ name, email, studentEmail, password });
       
-      const response = await axios.post('http://localhost:3000/user/register/parent', {
+      const response = await axios.post('https://coaching-backend-gamma.vercel.app/user/register/parent', {
         name,
         email,
         studentEmail,

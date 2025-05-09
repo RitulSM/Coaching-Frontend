@@ -33,7 +33,7 @@ function StudentBatches() {
             const { id: student_id, token } = JSON.parse(userData);
             const response = await axios({
                 method: 'GET',
-                url: `http://localhost:3000/user/my-batches`,
+                url: `https://coaching-backend-gamma.vercel.app/user/my-batches`,
                 params: { student_id },
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -44,7 +44,7 @@ function TimetableManager({ batchId }) {
 
             const { token } = JSON.parse(teacherData);
             const response = await axios.get(
-                `http://localhost:3000/admin/batches/${batchId}/timetable`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/timetable`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -73,7 +73,7 @@ function TimetableManager({ batchId }) {
 
             const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
             const response = await axios.put(
-                `http://localhost:3000/admin/batches/${batchId}/timetable/${selectedDay}/${newEntry.hour}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/timetable/${selectedDay}/${newEntry.hour}`,
                 {
                     subject: newEntry.subject,
                     teacher: newEntry.teacher,
@@ -117,7 +117,7 @@ function TimetableManager({ batchId }) {
 
             const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
             const response = await axios.delete(
-                `http://localhost:3000/admin/batches/${batchId}/timetable/${selectedDay}/${hour}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/timetable/${selectedDay}/${hour}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${teacherData.id}`,
@@ -151,7 +151,7 @@ function TimetableManager({ batchId }) {
 
             const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
             const response = await axios.delete(
-                `http://localhost:3000/admin/batches/${batchId}/timetable/${selectedDay}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/timetable/${selectedDay}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${teacherData.id}`,

@@ -26,7 +26,7 @@ function ParentDashboard() {
 
             const userData = JSON.parse(userStr);
             const response = await axios.get(
-                'http://localhost:3000/user/parent/student-batches',
+                'https://coaching-backend-gamma.vercel.app/user/parent/student-batches',
                 {
                     headers: {
                         'Authorization': `Bearer ${userData.token}`

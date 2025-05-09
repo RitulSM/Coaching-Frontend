@@ -36,7 +36,7 @@ function TestResultsManager({ batchId, students }) {
 
             const { token, id } = JSON.parse(teacherData);
             const response = await axios.get(
-                `http://localhost:3000/admin/batches/${batchId}/tests`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/tests`,
                 {
                     headers: {
                         'Authorization': `Bearer ${id}`,
@@ -114,7 +114,7 @@ function TestResultsManager({ batchId, students }) {
             if (editingTestId) {
                 // Update existing test
                 response = await axios.put(
-                    `http://localhost:3000/admin/batches/${batchId}/tests/${editingTestId}`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/tests/${editingTestId}`,
                     payload,
                     {
                         headers: {
@@ -126,7 +126,7 @@ function TestResultsManager({ batchId, students }) {
             } else {
                 // Create new test
                 response = await axios.post(
-                    `http://localhost:3000/admin/batches/${batchId}/tests`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/tests`,
                     payload,
                     {
                         headers: {
@@ -175,7 +175,7 @@ function TestResultsManager({ batchId, students }) {
 
             const { token, id } = JSON.parse(teacherData);
             const response = await axios.delete(
-                `http://localhost:3000/admin/batches/${batchId}/tests/${testId}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/tests/${testId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${id}`
@@ -241,7 +241,7 @@ function TestResultsManager({ batchId, students }) {
             })).filter(mark => mark.marks > 0); // Only include students with marks
             
             const response = await axios.put(
-                `http://localhost:3000/admin/batches/${batchId}/tests/${selectedTest._id}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/tests/${selectedTest._id}`,
                 { studentMarks: studentMarksArray },
                 {
                     headers: {

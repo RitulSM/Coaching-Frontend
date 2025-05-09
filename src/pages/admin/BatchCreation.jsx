@@ -49,7 +49,7 @@ function BatchCreation() {
 
             const { token } = JSON.parse(teacherData);
             const response = await axios.post(
-                'http://localhost:3000/admin/batches',
+                'https://coaching-backend-gamma.vercel.app/admin/batches',
                 formData,
                 {
                     headers: {

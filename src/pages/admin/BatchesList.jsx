@@ -27,7 +27,7 @@ function BatchesList() {
 
     const fetchBatches = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/admin/batches');
+            const response = await axios.get('https://coaching-backend-gamma.vercel.app/admin/batches');
             if (response.data?.success) {
                 // Filter batches to only show those created by the logged-in teacher
                 const teacherData = localStorage.getItem('teacherUser');
@@ -60,7 +60,7 @@ function BatchesList() {
         try {
             const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
             const response = await axios.delete(
-                `http://localhost:3000/admin/batches/${batchId}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${teacherData.id}`,

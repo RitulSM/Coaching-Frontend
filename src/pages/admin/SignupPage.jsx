@@ -30,7 +30,7 @@ function TeacherSignupPage() {
     try {
       signupSchema.parse({ name, email, password });
 
-      const response = await axios.post('http://localhost:3000/admin/register', {
+      const response = await axios.post('https://coaching-backend-gamma.vercel.app/admin/register', {
         name,
         email,
         password

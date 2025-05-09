@@ -30,7 +30,7 @@ function UserSignupPage() {
     try {
       registerSchema.parse({ name, email, password });
       
-      const response = await axios.post('http://localhost:3000/user/register', {
+      const response = await axios.post('https://coaching-backend-gamma.vercel.app/user/register', {
         name,
         email,
         password

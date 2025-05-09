@@ -26,7 +26,7 @@ function TeacherLoginPage() {
     setError('');
     
     try {
-      const response = await axios.post('http://localhost:3000/admin/login', {
+      const response = await axios.post('https://coaching-backend-gamma.vercel.app/admin/login', {
         email: email,
         password: password
       });

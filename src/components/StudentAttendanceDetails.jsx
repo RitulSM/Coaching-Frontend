@@ -21,7 +21,7 @@ function StudentAttendanceDetails({ batchId, student }) {
         try {
             const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
             const response = await axios.get(
-                `http://localhost:3000/admin/batches/${batchId}/student-attendance/${student._id}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/student-attendance/${student._id}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${teacherData.id}`

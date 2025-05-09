@@ -40,7 +40,7 @@ function JoinBatch() {
 
             const response = await axios({
                 method: 'POST',
-                url: 'http://localhost:3000/user/join-batch',
+                url: 'https://coaching-backend-gamma.vercel.app/user/join-batch',
                 data: { batch_code: batchCode.trim() },
                 headers: {
                     'Authorization': `Bearer ${token}`,

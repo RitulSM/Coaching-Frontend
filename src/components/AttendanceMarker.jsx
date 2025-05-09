@@ -65,7 +65,7 @@ function AttendanceMarker({ batchId, students }) {
             setLoading(true);
             const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
             const response = await axios.get(
-                `http://localhost:3000/admin/batches/${batchId}/attendance`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/attendance`,
                 {
                     headers: {
                         'Authorization': `Bearer ${teacherData.id}`
@@ -133,7 +133,7 @@ function AttendanceMarker({ batchId, students }) {
             if (isEditing && editingRecord) {
                 // Update existing attendance record
                 const response = await axios.put(
-                    `http://localhost:3000/admin/batches/${batchId}/attendance/${editingRecord._id}`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/attendance/${editingRecord._id}`,
                     {
                         records: attendance
                     },
@@ -155,7 +155,7 @@ function AttendanceMarker({ batchId, students }) {
             } else if (existingAttendanceForDate) {
                 // Update attendance for today that already exists
                 const response = await axios.put(
-                    `http://localhost:3000/admin/batches/${batchId}/attendance/${existingAttendanceForDate._id}`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/attendance/${existingAttendanceForDate._id}`,
                     {
                         records: attendance
                     },
@@ -174,7 +174,7 @@ function AttendanceMarker({ batchId, students }) {
             } else {
                 // Create new attendance record
                 const response = await axios.post(
-                    `http://localhost:3000/admin/batches/${batchId}/attendance`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/attendance`,
                     {
                         date,
                         records: attendance
@@ -234,7 +234,7 @@ function AttendanceMarker({ batchId, students }) {
             setDeleteLoading(true);
             const teacherData = JSON.parse(localStorage.getItem('teacherUser'));
             const response = await axios.delete(
-                `http://localhost:3000/admin/batches/${batchId}/attendance/${deleteRecordId}`,
+                `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/attendance/${deleteRecordId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${teacherData.id}`

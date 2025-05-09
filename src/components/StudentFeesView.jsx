@@ -33,7 +33,7 @@ function StudentFeesView({ batchId }) {
             });
 
             const response = await axios.get(
-                `http://localhost:3000/user/student/batches/${batchId}/fees`,
+                `https://coaching-backend-gamma.vercel.app/user/student/batches/${batchId}/fees`,
                 {
                     params: { userId: userData.id },
                     headers: {

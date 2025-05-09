@@ -28,7 +28,7 @@ function ParentFeesView({ batchId, studentId }) {
             }
 
             const response = await axios.get(
-                `http://localhost:3000/user/parent/batches/${batchId}/fees`,
+                `https://coaching-backend-gamma.vercel.app/user/parent/batches/${batchId}/fees`,
                 {
                     params: { 
                         parentId: parentData.id,

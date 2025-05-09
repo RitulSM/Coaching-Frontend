@@ -39,8 +39,8 @@ function TestResultsDebug({ batchId, studentId, isParentView = false }) {
             const token = parsedUserData.token || parsedUserData.id;
             
             const endpoint = isParentView 
-                ? `http://localhost:3000/user/parent/batches/${batchId}/tests`
-                : `http://localhost:3000/user/student/batches/${batchId}/tests`;
+                ? `https://coaching-backend-gamma.vercel.app/user/parent/batches/${batchId}/tests`
+                : `https://coaching-backend-gamma.vercel.app/user/student/batches/${batchId}/tests`;
             
             const queryParams = isParentView 
                 ? { params: { studentId } }

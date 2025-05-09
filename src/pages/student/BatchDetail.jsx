@@ -48,7 +48,7 @@ function StudentBatchDetail() {
                 });
 
                 const response = await axios.get(
-                    `http://localhost:3000/user/student/batches/${batchId}`,
+                    `https://coaching-backend-gamma.vercel.app/user/student/batches/${batchId}`,
                     {
                         headers: {
                             'Authorization': `Bearer ${userData.token}`

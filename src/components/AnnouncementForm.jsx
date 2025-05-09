@@ -44,7 +44,7 @@ function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, 
             if (isEditing) {
                 // Update existing announcement
                 const response = await axios.put(
-                    `http://localhost:3000/admin/batches/${batchId}/announcements/${announcementToEdit._id}`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/announcements/${announcementToEdit._id}`,
                     formData,
                     {
                         headers: {
@@ -64,7 +64,7 @@ function AnnouncementForm({ batchId, onAnnouncementCreated, announcementToEdit, 
             } else {
                 // Create new announcement
                 const response = await axios.post(
-                    `http://localhost:3000/admin/batches/${batchId}/announcements`,
+                    `https://coaching-backend-gamma.vercel.app/admin/batches/${batchId}/announcements`,
                     {
                         ...formData,
                         teacher_id: teacherUser.id

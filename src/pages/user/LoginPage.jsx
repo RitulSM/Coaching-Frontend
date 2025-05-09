@@ -22,7 +22,7 @@ function UserLoginPage() {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/user/login/student', {
+      const response = await axios.post('https://coaching-backend-gamma.vercel.app/user/login/student', {
         email,
         password
       });
